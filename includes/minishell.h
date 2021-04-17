@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/16 01:07:10 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/16 18:34:47 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,10 @@ char	*ft_my_strjoin(char *s1, char *s2);
 	***** ANALYSIS LINE *****
 */
 int	analysis_input(char **line, int i, t_list **cmd);
-
+int	parsing_input(char **line, int *i, t_list **cmd, int *start_cmd)
+int	analysis_redir(char **line, int *i)
+int	analysis_sep(char **line, int *i, int *start_cmd, t_list **cmd)
+int	analysis_quote(char *line, int *i)
 /*
 	***** LINE *****
 */
@@ -96,6 +99,10 @@ int	check_simple_quote(char *line, int *i);
 	***** CHAR *****
 */
 int	is_escaped(char *line, int i);
+char	*add_char(char *line, int *pos, char c, int space);
+char	*delete_char(char *line, int *pos);
+char	*strjoin_char(char *s1, char c, int space, int j);
+int	before_char(char *line, int i, char c);
 
 /*
 	***** CHAR ESCAPED *****
@@ -107,9 +114,34 @@ int	sep_cmd(char *str, int i);
 int	redir(char *str, int i);
 
 /*
+	***** DOLLAR *****
+*/
+int	check_variable(char *line, int *i, int quote);
+int	replace_variable(char **line, int *i, t_env *env);
+int	check_dollar(char **line, int index, int *i, t_env *env);
+
+/*
+	***** WORD *****
+*/
+int	check_word(char *line, int i, int quote);
+int	delete_space(char **cmd, int i);
+
+/*
+	***** REDIR *****
+*/
+int	check_redir(char *line, int i);
+
+/*
+	***** CMD *****
+*/
+int	save_cmd_tmp(t_list **cmd, char *line, int start_cmd, int end_cmd);
+
+
+/*
 	***** UTILS *****
 */
 char	*my_substr(char *s, int start, int len);
+char	*process_free(char *s1, char *s2);
 
 /*
 	***** PROCESS END *****
@@ -128,5 +160,13 @@ int	prompt(void);
 */
 int	error_msg(int num, char c);
 int	error_msg_with_string(int num, char *str);
+
+/*
+	***** PRINT *****
+*/
+void	print_lst(t_list *lst);
+void	print_arg_cmd(char **arg_cmd);
+void	print_struct(t_list_cmd *lst);
+void	print_struct_complete(t_list_cmd **cmd);
 
 #endif

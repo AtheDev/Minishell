@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 00:47:49 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/16 01:03:40 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/16 18:22:10 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,40 +30,33 @@ int		is_escaped(char *line, int i)
 	return (1);
 }
 
-/*int		before_char(char *line, int i)
+int		before_char(char *line, int i, char c)
 {
 	while (--i >= 0)
 	{
 		if (line[i] != ' ' &&
-			((line[i] == ';' && is_escaped(line, i - 1) == 0)
-			|| (line[i] == '|' && is_escaped(line, i - 1) == 0)
-			|| (line[i] == '<' && is_escaped(line, i - 1) == 0)
-			|| (line[i] == '>' && is_escaped(line, i - 1) == 0)
-			|| (line[i] == '(' && is_escaped(line, i - 1) == 0)
-			|| (line[i] == ')' && is_escaped(line, i - 1) == 0)
-			|| (line[i] == '&' && is_escaped(line, i - 1) == 0)))
-			return (0);
+		((line[i] == ';' && is_escaped(line, i - 1) == 0)
+		|| (line[i] == '|' && is_escaped(line, i - 1) == 0)
+		|| (line[i] == '<' && is_escaped(line, i - 1) == 0)
+		|| (line[i] == '>' && is_escaped(line, i - 1) == 0)
+		|| (line[i] == '`' && is_escaped(line, i - 1) == 0)
+		|| (line[i] == '&' && is_escaped(line, i - 1) == 0)))
+		{
+			if (c == ';' || c == '|')
+				return (error_msg(1, c));
+			return (error_msg(1, line[i]));
+		}
+		else if (line[i] != ' ' &&
+		((line[i] == '(' && is_escaped(line, i - 1) == 0)
+		|| (line[i] == ')' && is_escaped(line, i - 1) == 0)))
+			return (error_msg(1, line[i]));
 		if (line[i] != ' ')
-			return (1);
+			return (0);
 	}
-	return (0);
+	return (1);
 }
 
-char	*process_free(char *tmp, char *tmp2)
-{
-	if (tmp != NULL)
-		free(tmp);
-	if(tmp2 != NULL)
-		free(tmp2);
-	return (NULL);
-}
-*/
-/*
-   si space = 0 => ne pas mettre d'espace autour du 'c'
-   si space = 1 => mettre un espace autour du 'c' = '>'|'<'
-   si space = 2 => mettre un espace autour du 'c' = '>>'
-*/
-/*char	*add_char(char *line, int *pos, char c, int space)
+char	*add_char(char *line, int *pos, char c, int space)
 {
 	char	*tmp;
 	char	*tmp2;
@@ -73,7 +66,7 @@ char	*process_free(char *tmp, char *tmp2)
 	free(line);
 	if (tmp == NULL || tmp2 == NULL)
 		return (process_free(tmp, tmp2));
-	tmp = strjoin_char(tmp, c, space);
+	tmp = strjoin_char(tmp, c, space, 0);
 	if (tmp == NULL)
 		return (process_free(tmp, tmp2));
 	line = ft_strjoin(tmp, tmp2);
@@ -86,7 +79,7 @@ char	*process_free(char *tmp, char *tmp2)
 
 char	*delete_char(char *line, int *pos)
 {
-	int	size;
+	int		size;
 	char	*tmp;
 	char	*tmp2;
 
@@ -104,26 +97,21 @@ char	*delete_char(char *line, int *pos)
 	return (line);
 }
 
-
-char	*strjoin_char(char *s1, char c, int space)
+char	*strjoin_char(char *s1, char c, int space, int j)
 {
 	char	*str;
 	int		i;
-	int		j;
 	int		size;
 
+	i = j;
 	if (!s1 || !c)
 		return (NULL);
 	size = 2;
-	if (space == 1)
-		size += 2;
-	if (space == 2)
-		size += 3;
+	space == 1 ? size += 2 : 2;
+	space == 2 ? size += 3 : 2;
 	str = malloc(sizeof(char) * (ft_strlen(s1) + size));
 	if (str == NULL)
 		return (NULL);
-	i = 0;
-	j = 0;
 	while (s1[i] != '\0')
 		str[j++] = s1[i++];
 	if (space > 0)
@@ -137,4 +125,3 @@ char	*strjoin_char(char *s1, char c, int space)
 	free(s1);
 	return (str);
 }
-*/

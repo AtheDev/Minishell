@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:36:48 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/15 23:38:38 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/16 15:52:13 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,18 @@ char	*my_substr(char *s, int start, int len)
 
 	if (!s)
 		return (NULL);
-	if ((size = ft_strlen(s)) < start)
+	size = (int)ft_strlen(s);
+	if (size < start)
 	{
-		if (!(str = malloc(sizeof(char))))
+		str = malloc(sizeof(char));
+		if (str == NULL)
 			return (NULL);
 		str[0] = '\0';
 	}
 	else
 	{
-		if (!(str = malloc(sizeof(char) * (len + 1))))
+		str = malloc(sizeof(char) * (len + 1));
+		if (str == NULL)
 			return (NULL);
 		i = -1;
 		while (++i < len)
@@ -37,4 +40,13 @@ char	*my_substr(char *s, int start, int len)
 	}
 	free(s);
 	return (str);
+}
+
+char	*process_free(char *s1, char *s2)
+{
+	if (s1 != NULL)
+		free(s1);
+	if (s2 != NULL)
+		free(s2);
+	return (NULL);
 }
