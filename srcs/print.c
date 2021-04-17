@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:41:32 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/16 17:41:43 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/17 09:57:10 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,10 @@ void	print_lst(t_list *lst)
 	tmp = lst;
 	while (lst->next != NULL)
 	{
-		printf("1 => lst = %s\n", lst->content);
+		ft_putstr_fd("1 => lst = ", 2);
+		ft_putstr_fd(lst->content, 2);
+		ft_putstr_fd("\n", 2);
+	//	printf("1 => lst = %s\n", lst->content);
 		lst = lst->next;
 	}
 	printf("2 => lst = %s\n", lst->content);
@@ -53,10 +56,19 @@ void	print_struct(t_list_cmd *lst)
 	t_list_cmd	*tmp;
 
 	tmp = lst;
-	printf("lst->cmd = %s\n", lst->cmd);
+	ft_putstr_fd("\nlst->cmd = ", 2);
+	ft_putstr_fd(lst->cmd, 2);
+	ft_putstr_fd("\nlst->semicolon = ", 2);
+	ft_putnbr_fd(lst->semicolon, 2);
+	ft_putstr_fd("\nlst->pipe = ", 2);
+	ft_putnbr_fd(lst->pipe, 2);
+	ft_putstr_fd("\nlst->nb_redir = ", 2);
+	ft_putnbr_fd(lst->nb_redir, 2);
+	ft_putstr_fd("\n", 2);
+/*	printf("lst->cmd = %s\n", lst->cmd);
 	printf("lst->semicolon = %d\n", lst->semicolon);
 	printf("lst->pipe = %d\n", lst->pipe);
-	printf("lst->nb_redir = %d\n", lst->nb_redir);
+	printf("lst->nb_redir = %d\n", lst->nb_redir);*/
 	print_arg_cmd(lst->arg_cmd);
 }
 
@@ -65,6 +77,7 @@ void	print_struct_complete(t_list_cmd **cmd)
 	t_list_cmd	*tmp;
 
 	tmp = *cmd;
+	ft_putstr_fd("\033[31m***** PRINT_STRUCT_COMPLETE *****\033[37m\n", 2);
 	while ((*cmd)->next_cmd != NULL)
 	{
 		print_struct(*cmd);
@@ -72,5 +85,7 @@ void	print_struct_complete(t_list_cmd **cmd)
 	}
 	print_struct(*cmd);
 	(*cmd) = tmp;
+	ft_putstr_fd("\033[31m***** FIN *****\033[37m\n", 2);
+	
 }
 

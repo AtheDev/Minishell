@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/16 18:34:47 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/17 10:17:48 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,10 @@ char	*ft_my_strjoin(char *s1, char *s2);
 	***** ANALYSIS LINE *****
 */
 int	analysis_input(char **line, int i, t_list **cmd);
-int	parsing_input(char **line, int *i, t_list **cmd, int *start_cmd)
-int	analysis_redir(char **line, int *i)
-int	analysis_sep(char **line, int *i, int *start_cmd, t_list **cmd)
-int	analysis_quote(char *line, int *i)
+int	parsing_input(char **line, int *i, t_list **cmd, int *start_cmd);
+int	analysis_redir(char **line, int *i);
+int	analysis_sep(char **line, int *i, int *start_cmd, t_list **cmd);
+int	analysis_quote(char *line, int *i);
 /*
 	***** LINE *****
 */
@@ -130,12 +130,25 @@ int	delete_space(char **cmd, int i);
 	***** REDIR *****
 */
 int	check_redir(char *line, int i);
+int	count_redir(char **arg);
 
 /*
 	***** CMD *****
 */
 int	save_cmd_tmp(t_list **cmd, char *line, int start_cmd, int end_cmd);
+int	save_cmd(t_list_cmd **cmd, t_list *cmd_tmp);
+void	ft_lstadd_back_cmd(t_list_cmd **cmd, t_list_cmd *new);
+t_list_cmd	*ft_lstnew_cmd(char *content);
+void	complete_struct(char *str, t_list_cmd **new);
 
+/*
+	***** SPLIT CMD *****
+*/
+char	**my_split(char *str, int j);
+char	*new_str(char *str, int i, int size);
+int		count_word(char *str, int i, int count, int num);
+int		moving_forward(char *str, int i);
+int		ft_isredir(char *str, int i);
 
 /*
 	***** UTILS *****
@@ -146,7 +159,7 @@ char	*process_free(char *s1, char *s2);
 /*
 	***** PROCESS END *****
 */
-int	process_end(t_env *env, int end, t_list *cmd_tmp);
+int	process_end(t_env *env, int end, t_list *cmd_tmp, t_list_cmd *tmp);
 void	clear_cmd(t_list_cmd *cmd);
 void	clear_cmd_tmp(t_list *cmd);
 

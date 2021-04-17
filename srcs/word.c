@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 11:17:19 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/16 18:10:13 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/17 11:23:52 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,11 @@ int	delete_space2(char **cmd, int *i, int num)
 {
 	if (num == 0)
 	{
-		while ((*cmd)[*i] != '\0' &&
-		(((*cmd)[*i] != ' ' && (*cmd)[*i] != '"' && (*cmd)[*i] != '\'') ||
-		db_quotes(*cmd, *i) == 1 || sp_quote(*cmd, *i) == 1 ||
-		((*cmd)[*i] == ' ' && is_escaped(*cmd, *i - 1) == 1)))
+		while ((((*cmd)[*i] != ' ' && (*cmd)[*i] != '"' && (*cmd)[*i] != '\'')
+		|| ((*cmd)[*i] == '"' && is_escaped(*cmd, *i - 1) == 1) ||
+		((*cmd)[*i] == ' ' && is_escaped(*cmd, *i - 1) == 1) ||
+		((*cmd)[*i] == '\'' && is_escaped(*cmd, *i - 1) == 1))
+		&& (*cmd)[*i] != '\0')
 			(*i)++;
 		(*i)--;
 	}

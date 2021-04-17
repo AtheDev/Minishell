@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:11:34 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/16 17:33:44 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/17 10:12:29 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,22 +31,6 @@ int	save_cmd_tmp(t_list **cmd, char *line, int start_cmd, int end_cmd)
 	return (0);
 }
 
-/*int	count_redir(char **arg)
-{
-	int	i;
-	int	count;
-
-	i = -1;
-	count = 0;
-	while (arg[++i] != NULL)
-	{
-		if (ft_strncmp(arg[i], ">>", ft_strlen(arg[i])) == 0)
-			count++;
-		else if (ft_strncmp(arg[i], "<", ft_strlen(arg[i])) == 0)
-			count++;
-	}
-	return (count);
-}
 
 void	complete_struct(char *str, t_list_cmd **new)
 {
@@ -112,9 +96,11 @@ int	save_cmd(t_list_cmd **cmd, t_list *cmd_tmp)
 	while (cmd_tmp != NULL)
 	{
 		new = ft_lstnew_cmd(cmd_tmp->content);
+		if (new == NULL)
+			return (-1);
 		ft_lstadd_back_cmd(cmd, new);
 		cmd_tmp = cmd_tmp->next;
 	}
 	cmd_tmp = tmp;
-	return (1);
-}*/
+	return (0);
+}
