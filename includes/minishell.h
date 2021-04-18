@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/17 10:17:48 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/18 11:27:55 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # include <dirent.h>
 # include <string.h>
 # include <errno.h>
+
+# define CHAR_PROTEC "\"\\`$\\n"
 
 typedef struct	s_env
 {
@@ -88,6 +90,7 @@ int	analysis_quote(char *line, int *i);
 */
 char	*clean_line(char *str);
 int	empty_line(char **line, int i);
+int	delete_two_char(char **line, int *i);
 
 /*
 	***** QUOTE *****
@@ -116,9 +119,20 @@ int	redir(char *str, int i);
 /*
 	***** DOLLAR *****
 */
-int	check_variable(char *line, int *i, int quote);
 int	replace_variable(char **line, int *i, t_env *env);
 int	check_dollar(char **line, int index, int *i, t_env *env);
+int	recover_variable(char **line, int *i, int *size_var, int *index, t_env *env);
+int	variable_not_found(char **line, char *tmp, int pos_dollar, int size_var);
+int	var_is_digit_or_interrogation_point(char **line, int *i, char *tmp, t_env *env);
+
+/*
+	***** DOLLAR UTILS *****
+*/
+int	search_var_env(char **tmp, t_env *env, int size_tmp);
+int	swap_var_env(char **tmp, char **line, int pos, int size_var);
+char	*add_str(char *str, char *line, int pos);
+int	save_value(char **tmp, char *env);
+int	check_variable(char *line, int *i, int quote);
 
 /*
 	***** WORD *****
@@ -151,10 +165,25 @@ int		moving_forward(char *str, int i);
 int		ft_isredir(char *str, int i);
 
 /*
+	***** PROCESS SHELL *****
+*/
+int	process_shell(t_env *env, t_list_cmd **cmd);
+
+/*
+	***** EDIT ARG *****
+*/
+int		dvlpmt_arg(char **arg, t_env *env);
+char	*edit_arg(char *str, t_env *env);
+char	*edit_arg_other(char *str, int *i, t_env *env);
+char	*edit_arg_db_quotes(char *str, int *i, t_env *env);
+
+/*
 	***** UTILS *****
 */
 char	*my_substr(char *s, int start, int len);
 char	*process_free(char *s1, char *s2);
+int	is_char(char c, char *str);
+int	ft_my_strncmp(char *s1, char *s2, size_t n);
 
 /*
 	***** PROCESS END *****

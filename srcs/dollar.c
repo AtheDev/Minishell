@@ -6,38 +6,13 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 09:56:23 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/16 15:05:52 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/18 11:27:06 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	check_variable(char *line, int *i, int quote)
-{
-	*i += 1;
-	while (line[*i] != '\0' && (ft_isalnum(line[*i]) == 1 || line[*i] == '_'))
-		(*i)++;
-	if (line[*i] == '`')
-		return (error_msg(3, ' '));
-	if (line[*i] == '\\' && line[*i + 1] == '\0')
-		return (error_msg(3, ' '));
-	if (line[*i] == '|' && empty_line(&line, *i + 1) == 1 && quote == 0)
-		return (error_msg(3, ' '));
-	if (quote == 0 &&
-	((line[*i] == '(' && empty_line(&line, *i + 1) == 1) ||
-	(line[*i] == ')' && empty_line(&line, *i + 1) == 1) ||
-	(line[*i] == '>' && empty_line(&line, *i + 1) == 1) ||
-	(line[*i] == '<' && empty_line(&line, *i + 1) == 1) ||
-	(line[*i] == '<' && line[*i + 1] == '<' && empty_line(&line, *i + 2) == 1) ||
-	(line[*i] == '>' && empty_line(&line, *i + 1) == 1) ||
-	(line[*i] == '>' && line[*i + 1] == '>' && empty_line(&line, *i + 2) == 1)))
-		return (error_msg(1, line[*i]));
-	if (quote == 0)
-		(*i)--;
-	return (0);
-}
-
-/*int	check_dollar(char **line, int index, int *i, t_env *env)
+int	check_dollar(char **line, int index, int *i, t_env *env)
 {
 	int	size_tot;
 
@@ -58,89 +33,105 @@ int	check_variable(char *line, int *i, int quote)
 	return (1);
 }
 
+int	var_is_digit_or_interrogation_point(char **line, int *i, char *tmp, t_env *env)
+{
+	char	*tmp2;
+
+	tmp2 = NULL;
+	if ((ft_isdigit((*line)[*i + 1]) == 1))
+		return (delete_two_char(line, i));
+	if ((*line)[*i + 1] == '?')
+	{
+		if (delete_two_char(line, i) == -1)
+			return (-1);
+		tmp = ft_substr(*line, 0, *i + 1);
+		tmp2 = ft_substr(*line, *i + 1, ft_strlen(*line) - *i);
+		if (tmp != NULL && tmp2 != NULL)
+		{
+			tmp = ft_strjoin(tmp, ft_itoa(env->return_value));
+			if (tmp != NULL)
+			{
+				*line = ft_strjoin(tmp, tmp2);
+				if (*line != NULL)
+					return (0);
+			}
+		}
+		process_free(tmp, tmp2);
+		return (error_msg(2, ' '));
+	}
+	return (1);
+}
+
+int	variable_not_found(char **line, char *tmp, int pos_dollar, int size_var)
+{
+	char	*tmp2;
+
+	tmp2 = NULL;
+	tmp = ft_substr(*line, 0, pos_dollar);
+	tmp2 = ft_substr(*line, pos_dollar + size_var + 1, ft_strlen(*line)
+	- (pos_dollar + size_var + 1));
+	if (tmp != NULL && tmp2 != NULL)
+	{
+		*line = ft_strjoin(tmp, tmp2);
+		if (*line != NULL)
+			return (0);
+	}
+	*line = process_free(tmp, tmp2);
+	return (-1);
+}
+
+int	recover_variable(char **line, int *i, int *size_var, int *index, t_env *env)
+{
+	int		j;
+	char	*tmp;
+	int		ret;
+	int		pos_dollar;
+
+	pos_dollar = *index;
+	while ((*line)[++*i] != '\0' && (ft_isalnum((*line)[*i]) == 1
+	|| (*line)[*i] == '_'))
+		(*size_var)++;
+	tmp = malloc(sizeof(char) * (*size_var + 1));
+	if (tmp == NULL)
+		return (-1);
+	j = 0;
+	while (++(*index) < *i)
+		tmp[j++] = (*line)[*index];
+	tmp[j] = '\0';
+	*index = ft_strlen(tmp);
+	ret = search_var_env(&tmp, env, *size_var);
+	if (ret == -1)
+		free(tmp);
+	else if (ret == 1)
+		return (variable_not_found(line, tmp, pos_dollar, *size_var));
+	else if (ret == 0)
+		return (swap_var_env(&tmp, line, pos_dollar, *size_var));
+	return (ret);
+}
+
 int	replace_variable(char **line, int *i, t_env *env)
 {
 	char	*tmp;
-	char	*tmp2;
 	int	index;
 	int	pos_dollar;
 	int	size_var;
-	int	j;
 	int	ret;
-	int	size_tmp;
 
 	index = *i;
 	pos_dollar = index;
 	tmp = NULL;
-	tmp2 = NULL;
 	size_var = 0;
-	if (ft_isdigit((*line)[*i + 1]) == 1)
-	{
-		*line = delete_char((*line), i);
-		(*i)++;
-		*line = delete_char((*line), i);
-		return (1);
-	}
-	if ((*line)[*i + 1] == '?')
-	{
-		*line = delete_char((*line), i);
-		(*i)++;
-		*line = delete_char((*line), i);
-		tmp = ft_substr(*line, 0, *i + 1);
-		tmp2 = ft_substr(*line, *i + 1, ft_strlen(*line) - *i);
-		tmp = ft_strjoin(tmp, ft_itoa(env->return_value));
-		*line = ft_strjoin(tmp, tmp2);
-		process_free(tmp, tmp2);
-		return (1);	
-	}
-	while ((*line)[++*i] != '\0' && (ft_isalnum((*line)[*i]) == 1
-	|| (*line)[*i] == '_'))
-		size_var++;
-	tmp = malloc(sizeof(char) * (size_var + 1));
-	if (tmp == NULL)
-		return (-1);
-	j = 0;
-	while (++index < *i)
-		tmp[j++] = (*line)[index];
-	tmp[j] = '\0';
-	ret = search_var_env(&tmp, env, size_var);
-	size_tmp = ft_strlen(tmp);
-	if (ret == -1)
-	{
-		free(tmp);
-		return (-1);
-	}
-	if (ret == 0)
-	{
-		printf("Pas de variable existante\n");
-		tmp = ft_substr(*line, 0, pos_dollar);
-		tmp2 = ft_substr(*line, pos_dollar + size_var + 1, ft_strlen(*line) - (pos_dollar + size_var + 1));
-		if (tmp == NULL || tmp2 == NULL)
-		{
-			*line = process_free(tmp, tmp2);
-			return (-1);
-		}
-		*line = ft_strjoin(tmp, tmp2);
-		if (*line == NULL)
-		{
-			process_free(tmp, tmp2);
-			return (-1);
-		}
-	}
-	if (ret == 1)
-	{
-		printf("Variable trouvée et échangée\n");
-		if (swap_var_env(&tmp, line, pos_dollar, size_var) == -1)
-		{
-			process_free(tmp, tmp2);
-			return (-1);
-		}
-	}
-	process_free(tmp, tmp2);
+	ret = var_is_digit_or_interrogation_point(line, i, tmp, env);
+	if (ret == 0 || ret == -1)
+		return (ret);
+	ret = recover_variable(line, i, &size_var, &index, env);
+	process_free(tmp, NULL);
 	if (ret == 0)
 		*i = pos_dollar - 1;
+	else if (ret == -1)
+		return (error_msg(2, ' '));
 	else
-		*i = --(*i) + size_tmp - size_var - 2;
-	return (1);
+		*i = --(*i) + index - size_var - 2;
+	return (0);
 }
-*/
+

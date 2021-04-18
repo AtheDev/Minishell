@@ -3,7 +3,8 @@ NAME = minishell
 SRCS = srcs/main.c srcs/env.c srcs/get_env.c srcs/gnl.c srcs/analysis_input.c \
 	srcs/line.c srcs/utils.c srcs/error.c srcs/process_end.c srcs/prompt.c \
 	srcs/char.c srcs/char_escaped.c srcs/quote.c srcs/dollar.c srcs/word.c \
-	srcs/redir.c srcs/cmd.c srcs/print.c srcs/split_cmd.c
+	srcs/redir.c srcs/cmd.c srcs/print.c srcs/split_cmd.c srcs/process_shell.c \
+	srcs/edit_arg.c srcs/dollar_utils.c
 
 OBJS = $(SRCS:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:03:14 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/17 11:28:12 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/18 10:58:08 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int	main(int argc, char **argv, char **envp)
 		ret = save_cmd(&cmd, cmd_tmp);
 	if (ret == -1)
 		return (process_end(&env, EXIT_FAILURE, cmd_tmp, cmd));
-	//print_struct_complete(&cmd);	
+	else
+		process_shell(&env, &cmd);
+//	print_struct_complete(&cmd);	
 	return (process_end(&env, EXIT_SUCCESS, cmd_tmp, cmd));
 }
