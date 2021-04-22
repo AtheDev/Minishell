@@ -6,20 +6,11 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 10:08:32 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/17 11:24:34 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/20 11:03:11 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int		ft_isredir(char *str, int i)
-{
-	if (str[i] == '>' && str[i + 1] == '>')
-		return (2);
-	if (str[i] == '<' || str[i] == '>')
-		return (1);
-	return (0);
-}
 
 int		moving_forward(char *str, int i)
 {
@@ -50,6 +41,14 @@ int		moving_forward(char *str, int i)
 	return (i);
 }
 
+int		count_word_next(int i, int *j, int k, int num)
+{
+	*j = i - k;
+	if (num == 1)
+		return (*j);
+	return (-1);
+}
+
 int		count_word(char *str, int i, int count, int num)
 {
 	int	j;
@@ -61,8 +60,7 @@ int		count_word(char *str, int i, int count, int num)
 	{
 		if (ft_isspace(str[i]) == 1 && is_escaped(str, i - 1) == 0)
 		{
-			j = i - k;
-			if (num == 1)
+			if (count_word_next(i, &j, k, num) != -1)
 				return (j);
 			count++;
 		}
@@ -71,8 +69,7 @@ int		count_word(char *str, int i, int count, int num)
 		i++;
 		if (str[i] == '\0' && ft_isspace(str[i - 1]) == 0)
 		{
-			j = i - k;
-			if (num == 1)
+			if (count_word_next(i, &j, k, num) != -1)
 				return (j);
 			count += 2;
 		}

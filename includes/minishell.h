@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/18 11:27:55 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/21 17:50:42 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@
 # include <errno.h>
 
 # define CHAR_PROTEC "\"\\`$\\n"
+# define ULL_LIMIT_MAX 9223372036854775807
+# define LL_LIMIT_MIN "-9223372036854775808"
+
+int	g_sig;
 
 typedef struct	s_env
 {
@@ -68,6 +72,7 @@ void	clear_env(t_env *env);
 */
 char	*get_value_var_env(char *str);
 char	*get_var_env(t_env **env, char *str);
+char	*get_key_var_env(char *str);
 char	*inc_shlvl(char *str);
 
 /*
@@ -144,7 +149,9 @@ int	delete_space(char **cmd, int i);
 	***** REDIR *****
 */
 int	check_redir(char *line, int i);
+int	check_redir_out(char *line, int i);
 int	count_redir(char **arg);
+int	ft_isredir(char *str, int i);
 
 /*
 	***** CMD *****
@@ -161,13 +168,76 @@ void	complete_struct(char *str, t_list_cmd **new);
 char	**my_split(char *str, int j);
 char	*new_str(char *str, int i, int size);
 int		count_word(char *str, int i, int count, int num);
+int		count_word_next(int i, int *j, int k, int num);
 int		moving_forward(char *str, int i);
-int		ft_isredir(char *str, int i);
 
 /*
 	***** PROCESS SHELL *****
 */
 int	process_shell(t_env *env, t_list_cmd **cmd);
+
+/*
+	*******************
+	***** BUILTIN *****
+	*******************
+*/
+/*
+	--> built.c
+*/
+int	is_builtin(t_env *env, t_list_cmd **cmd, int fork);
+
+/*
+	--> pwd.c
+*/
+int	ft_pwd(char **arg, t_env *env);
+
+/*
+	--> echo.c
+*/
+int	chech_option_echo(char *str, int i);
+int	ft_echo(char **arg, int i, int n);
+
+/*
+	--> exit.c
+*/
+int	ft_exit(char **arg, t_env **env, int fork);
+unsigned long long	long_long_atoi(const char *str);
+int	check_value_arg(char *str);
+
+/*
+	--> env.c
+*/
+int	ft_env(char **arg, t_env *env);
+
+/*
+	--> export.c
+*/
+int	sort_env(t_env **env, int i);
+int	ft_export(char **arg, t_env **env);
+
+/*
+	--> unset.c
+*/
+int	ft_unset(char **arg, t_env **env);
+int	check_arg_var(char **arg, int cmd/*, t_env **env*/);
+
+/*
+	--> cd.c
+*/
+int	ft_cd(char **arg, t_env **env);
+
+/*
+	--> add_or_delete_var_env.c
+*/
+int	process_add_var_env(char *arg, t_env **env);
+char	**add_var_env(char *arg, char **var_env, size_t size);
+int	process_delete_var_env(char *arg, t_env **env);
+char	**delete_var_env(char **var_env, int num, size_t size);
+
+/*
+	--> utils.c
+*/
+int	check_nb_arg(char **arg, int count);
 
 /*
 	***** EDIT ARG *****
@@ -180,10 +250,32 @@ char	*edit_arg_db_quotes(char *str, int *i, t_env *env);
 /*
 	***** UTILS *****
 */
-char	*my_substr(char *s, int start, int len);
+char	*my_substr(char *s, int start, int len, int i);
 char	*process_free(char *s1, char *s2);
 int	is_char(char c, char *str);
 int	ft_my_strncmp(char *s1, char *s2, size_t n);
+char	**free_tab_string(char **tab);
+
+/*
+	***** PIPE *****
+*/
+int	count_pipes(t_list_cmd **cmd);
+int	create_pipe(t_list_cmd *cmd1, t_list_cmd *cmd2);
+void	redirect(int fd1, int fd2);
+void	cancel_redirect(t_list_cmd *cmd, t_env *env);
+
+/*
+	***** REDIRECT *****
+*/
+int	process_redir_cmd(t_list_cmd **cmd, int nb_redir);
+int	open_file(t_list_cmd **cmd, int i, int *index);
+char	**delete_redir_and_file(char **cmd, int nb);
+int	close_redir(t_list_cmd **cmd);
+
+/*
+	***** PATH *****
+*/
+int	search_path(char **arg, t_env **env, int i, int ret);
 
 /*
 	***** PROCESS END *****
@@ -202,6 +294,7 @@ int	prompt(void);
 */
 int	error_msg(int num, char c);
 int	error_msg_with_string(int num, char *str);
+int	putstr(char *str1, char *str2, char *str3);
 
 /*
 	***** PRINT *****

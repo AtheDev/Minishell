@@ -6,16 +6,15 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:36:48 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/18 10:35:28 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/20 14:43:03 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*my_substr(char *s, int start, int len)
+char	*my_substr(char *s, int start, int len, int i)
 {
 	char	*str;
-	int		i;
 	int		size;
 
 	if (!s)
@@ -33,7 +32,6 @@ char	*my_substr(char *s, int start, int len)
 		str = malloc(sizeof(char) * (len + 1));
 		if (str == NULL)
 			return (NULL);
-		i = -1;
 		while (++i < len)
 			str[i] = s[start + i];
 		str[i] = '\0';
@@ -51,7 +49,7 @@ char	*process_free(char *s1, char *s2)
 	return (NULL);
 }
 
-int	is_char(char c, char *str)
+int		is_char(char c, char *str)
 {
 	int	i;
 
@@ -65,7 +63,7 @@ int	is_char(char c, char *str)
 	return (1);
 }
 
-int	ft_my_strncmp(char *s1, char *s2, size_t n)
+int		ft_my_strncmp(char *s1, char *s2, size_t n)
 {
 	while (*s1 == *s2 && *s1 && n)
 	{
@@ -78,4 +76,19 @@ int	ft_my_strncmp(char *s1, char *s2, size_t n)
 	if ((*s1) != '=')
 		return (1);
 	return (0);
+}
+
+char	**free_tab_string(char **tab)
+{
+	int	i;
+
+	i = -1;
+	while (tab[++i] != NULL)
+	{
+		free(tab[i]);
+		tab[i] = NULL;
+	}
+	free(tab);
+	tab = NULL;
+	return (NULL);
 }

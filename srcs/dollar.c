@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 09:56:23 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/18 11:27:06 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/20 11:42:46 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ int	check_dollar(char **line, int index, int *i, t_env *env)
 	return (1);
 }
 
-int	var_is_digit_or_interrogation_point(char **line, int *i, char *tmp, t_env *env)
+int	var_is_digit_or_interrogation_point
+	(char **line, int *i, char *tmp, t_env *env)
 {
 	char	*tmp2;
 
@@ -91,8 +92,7 @@ int	recover_variable(char **line, int *i, int *size_var, int *index, t_env *env)
 	while ((*line)[++*i] != '\0' && (ft_isalnum((*line)[*i]) == 1
 	|| (*line)[*i] == '_'))
 		(*size_var)++;
-	tmp = malloc(sizeof(char) * (*size_var + 1));
-	if (tmp == NULL)
+	if ((tmp = malloc(sizeof(char) * (*size_var + 1))) == NULL)
 		return (-1);
 	j = 0;
 	while (++(*index) < *i)
@@ -112,10 +112,10 @@ int	recover_variable(char **line, int *i, int *size_var, int *index, t_env *env)
 int	replace_variable(char **line, int *i, t_env *env)
 {
 	char	*tmp;
-	int	index;
-	int	pos_dollar;
-	int	size_var;
-	int	ret;
+	int		index;
+	int		pos_dollar;
+	int		size_var;
+	int		ret;
 
 	index = *i;
 	pos_dollar = index;
@@ -134,4 +134,3 @@ int	replace_variable(char **line, int *i, t_env *env)
 		*i = --(*i) + index - size_var - 2;
 	return (0);
 }
-

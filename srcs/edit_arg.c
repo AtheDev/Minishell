@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 11:41:45 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/18 11:24:31 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/20 11:56:57 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,14 +100,13 @@ char	*edit_arg(char *str, t_env *env)
 int		dvlpmt_arg(char **arg, t_env *env)
 {
 	int	i;
+
 	i = -1;
 	while (arg[++i] != NULL)
 	{
 		arg[i] = edit_arg(arg[i], env);
-		printf("arg[%d] = %s\n", i, arg[i]);
 		if (arg[i] == NULL)
 			return (error_msg(2, ' '));
 	}
 	return (0);
 }
-

@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:41:32 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/17 09:57:10 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/20 14:04:12 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	print_lst(t_list *lst)
 		ft_putstr_fd("1 => lst = ", 2);
 		ft_putstr_fd(lst->content, 2);
 		ft_putstr_fd("\n", 2);
-	//	printf("1 => lst = %s\n", lst->content);
 		lst = lst->next;
 	}
 	printf("2 => lst = %s\n", lst->content);
@@ -41,14 +40,12 @@ void	print_arg_cmd(char **arg_cmd)
 		ft_putstr_fd("] = ", 2);
 		ft_putstr_fd(arg_cmd[i], 2);
 		ft_putstr_fd("\n", 2);
-	//	printf("arg_cmd[%d] = %s\n", i, arg_cmd[i]);
 	}
 	ft_putstr_fd("arg_cmd[", 2);
 	ft_putnbr_fd(i, 2);
 	ft_putstr_fd("] = ", 2);
 	ft_putstr_fd(arg_cmd[i], 2);
 	ft_putstr_fd("\n", 2);
-//	printf("arg_cmd[%d] = %s\n", i, arg_cmd[i]);
 }
 
 void	print_struct(t_list_cmd *lst)
@@ -65,10 +62,6 @@ void	print_struct(t_list_cmd *lst)
 	ft_putstr_fd("\nlst->nb_redir = ", 2);
 	ft_putnbr_fd(lst->nb_redir, 2);
 	ft_putstr_fd("\n", 2);
-/*	printf("lst->cmd = %s\n", lst->cmd);
-	printf("lst->semicolon = %d\n", lst->semicolon);
-	printf("lst->pipe = %d\n", lst->pipe);
-	printf("lst->nb_redir = %d\n", lst->nb_redir);*/
 	print_arg_cmd(lst->arg_cmd);
 }
 
@@ -86,6 +79,4 @@ void	print_struct_complete(t_list_cmd **cmd)
 	print_struct(*cmd);
 	(*cmd) = tmp;
 	ft_putstr_fd("\033[31m***** FIN *****\033[37m\n", 2);
-	
 }
-

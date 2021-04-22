@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:26:08 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/16 18:33:29 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/20 10:25:12 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	parsing_input(char **line, int *i, t_list **cmd, int *start_cmd)
 	else if ((*line)[*i] == '#' && ((*line)[*i - 1] == ' ' ||
 	((*line)[*i - 1] == ';')) && is_escaped(*line, *i - 2) == 0)
 	{
-		*line = my_substr(*line, 0, *i - 1);
+		*line = my_substr(*line, 0, *i - 1, -1);
 		return (2);
 	}
 	else if (dollar(*line, *i) == 0 && (*line)[*i + 1] != '\0'

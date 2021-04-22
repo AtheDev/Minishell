@@ -6,13 +6,13 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:11:34 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/17 10:12:29 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/20 11:22:24 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	save_cmd_tmp(t_list **cmd, char *line, int start_cmd, int end_cmd)
+int			save_cmd_tmp(t_list **cmd, char *line, int start_cmd, int end_cmd)
 {
 	char	*tmp;
 	t_list	*new;
@@ -31,8 +31,7 @@ int	save_cmd_tmp(t_list **cmd, char *line, int start_cmd, int end_cmd)
 	return (0);
 }
 
-
-void	complete_struct(char *str, t_list_cmd **new)
+void		complete_struct(char *str, t_list_cmd **new)
 {
 	int	size;
 
@@ -48,6 +47,7 @@ void	complete_struct(char *str, t_list_cmd **new)
 	else
 		(*new)->pipe = 0;
 	(*new)->nb_redir = count_redir((*new)->arg_cmd);
+	(*new)->fd_redir = NULL;
 	(*new)->fd[0] = 0;
 	(*new)->fd[1] = 1;
 }
@@ -71,7 +71,7 @@ t_list_cmd	*ft_lstnew_cmd(char *content)
 	return (new);
 }
 
-void	ft_lstadd_back_cmd(t_list_cmd **cmd, t_list_cmd *new)
+void		ft_lstadd_back_cmd(t_list_cmd **cmd, t_list_cmd *new)
 {
 	t_list_cmd	*tmp;
 
@@ -87,9 +87,9 @@ void	ft_lstadd_back_cmd(t_list_cmd **cmd, t_list_cmd *new)
 		*cmd = new;
 }
 
-int	save_cmd(t_list_cmd **cmd, t_list *cmd_tmp)
+int			save_cmd(t_list_cmd **cmd, t_list *cmd_tmp)
 {
-	t_list	*tmp;
+	t_list		*tmp;
 	t_list_cmd	*new;
 
 	tmp = cmd_tmp;

@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 21:26:13 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/15 22:13:07 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/20 11:58:01 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,20 @@ char	*get_value_var_env(char *str)
 		return (NULL);
 	value = ft_strrchr_rev(str, '=') + 1;
 	return (value);
+}
+
+char	*get_key_var_env(char *str)
+{
+	int		i;
+	char	*key;
+
+	i = 0;
+	while (str[i] != '=')
+		i++;
+	key = ft_substr(str, 0, i);
+	if (key == NULL)
+		return (NULL);
+	return (key);
 }
 
 char	*get_var_env(t_env **env, char *str)
