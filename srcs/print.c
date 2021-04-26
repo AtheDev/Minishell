@@ -6,11 +6,50 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:41:32 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/20 14:04:12 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/26 14:48:10 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	print_hist(t_list **hist)
+{
+	t_list	*tmp;
+
+	tmp = *hist;
+	ft_putstr_fd("\033[31m***** PRINT_HISTORY *****\033[37m\n", 2);
+	while ((*hist)->next != NULL)
+	{
+		ft_putstr_fd("\033[32mHIST->CONTENT = \033[37m", 2);
+		ft_putendl_fd((*hist)->content, 2);
+	/*	if ((*hist)->before != NULL)
+		{
+			ft_putstr_fd("\033[32mHIST->BEFORE = \033[37m", 2);
+			ft_putendl_fd((*hist)->before->hist, 2);
+		}*/
+		if ((*hist)->next != NULL)
+		{
+			ft_putstr_fd("\033[32mHIST->NEXT = \033[37m", 2);
+			ft_putendl_fd((*hist)->next->content, 2);
+		}
+		ft_putstr_fd("\n", 2);
+		*hist = (*hist)->next;
+	}
+	ft_putstr_fd("\033[32mHIST->CONTENT = \033[37m", 2);
+	ft_putendl_fd((*hist)->content, 2);
+/*	if ((*hist)->before != NULL)
+	{
+		ft_putstr_fd("\033[32mHIST->BEFORE = \033[37m", 2);
+		ft_putendl_fd((*hist)->before->hist, 2);
+	}*/
+	if ((*hist)->next != NULL)
+	{
+		ft_putstr_fd("\033[32mHIST->NEXT = \033[37m", 2);
+		ft_putendl_fd((*hist)->next->content, 2);
+	}
+	*hist = tmp;
+	ft_putstr_fd("\033[31m***** FIN *****\033[37m\n", 2);
+}
 
 void	print_lst(t_list *lst)
 {

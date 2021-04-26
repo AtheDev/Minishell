@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 22:15:53 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/20 15:17:11 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/22 20:33:42 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,16 @@ int	error_msg_with_string(int num, char *str)
 	if (num == 7)
 		putstr("env: «", str, "» : no such file or directory\n");
 	return (1);
+}
+
+int	error_term(int num, char *str)
+{
+	if (num == 1)
+		ft_putstr_fd("Could not access to the termcap database..\n", 2);
+	if (num == 2)
+	{
+		putstr("Terminal type '", str, "' is not defined in termcap ");
+		ft_putstr_fd("database (or have too few informations).\n", 2);
+	}
+	return (-1);
 }

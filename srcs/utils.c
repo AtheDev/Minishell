@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:36:48 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/20 14:43:03 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/22 20:33:14 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,17 +78,17 @@ int		ft_my_strncmp(char *s1, char *s2, size_t n)
 	return (0);
 }
 
-char	**free_tab_string(char **tab)
+char	**free_tab_string(char **tab_string)
 {
 	int	i;
 
 	i = -1;
-	while (tab[++i] != NULL)
+	while (tab_string[++i] != NULL)
 	{
-		free(tab[i]);
-		tab[i] = NULL;
+		free(tab_string[i]);
+		tab_string[i] = NULL;
 	}
-	free(tab);
-	tab = NULL;
+	free(tab_string);
+	tab_string = NULL;
 	return (NULL);
 }

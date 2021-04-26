@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/21 17:50:42 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/26 19:28:54 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@
 # include <dirent.h>
 # include <string.h>
 # include <errno.h>
+# include <term.h>
+# include <termios.h>
 
 # define CHAR_PROTEC "\"\\`$\\n"
 # define ULL_LIMIT_MAX 9223372036854775807
@@ -57,6 +59,22 @@ typedef struct	s_list_cmd
 	struct	s_list_cmd	*next_cmd;
 	
 }			t_list_cmd;
+
+typedef struct	s_termcap
+{
+	t_list	*history;
+	int	pos_hist;
+	int	tot_hist;
+	int	pos_cursor;
+	int	tot_cursor;
+	int	size_prompt;
+	char	*input;
+	char	*input_tmp;
+	char	*line;
+	char	*del_line;
+	char	*del_char;
+	char	*move_left;
+}			t_termcap;
 
 /*
 	***** ENV *****
@@ -254,7 +272,7 @@ char	*my_substr(char *s, int start, int len, int i);
 char	*process_free(char *s1, char *s2);
 int	is_char(char c, char *str);
 int	ft_my_strncmp(char *s1, char *s2, size_t n);
-char	**free_tab_string(char **tab);
+char	**free_tab_string(char **tab_string);
 
 /*
 	***** PIPE *****
@@ -287,7 +305,7 @@ void	clear_cmd_tmp(t_list *cmd);
 /*
 	***** PROMPT *****
 */
-int	prompt(void);
+int	prompt(t_termcap *t);
 
 /*
 	***** ERROR *****
@@ -295,6 +313,7 @@ int	prompt(void);
 int	error_msg(int num, char c);
 int	error_msg_with_string(int num, char *str);
 int	putstr(char *str1, char *str2, char *str3);
+int	error_term(int num, char *str);
 
 /*
 	***** PRINT *****
@@ -303,5 +322,29 @@ void	print_lst(t_list *lst);
 void	print_arg_cmd(char **arg_cmd);
 void	print_struct(t_list_cmd *lst);
 void	print_struct_complete(t_list_cmd **cmd);
+void	print_hist(t_list **hist);
+
+/*
+	***** INIT *****
+*/
+void	init(int argc, char **argv, t_list **cmd_tmp, t_list_cmd **cmd);
+int	init2(t_env *env, char **envp, t_termcap *t);
+
+/*
+	***** READ *****
+*/
+int	process_read(t_termcap *termcap);
+
+/*
+	***** TERMCAP *****
+*/
+int	init_term(t_env *env);
+int	swap_way_icanon_echo(int num);
+
+/*
+	***** SIGNAL *****
+*/
+void	handler_sigint(int num);
+void	handler_sigquit(int num);
 
 #endif

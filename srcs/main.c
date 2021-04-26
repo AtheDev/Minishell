@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:03:14 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/21 18:18:34 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/26 22:42:46 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,14 @@
 void	handler_sigint(int num)
 {
 	(void)num;
-	if (g_sig != 0)
-		ft_putstr_fd("\n", 2);
+	if (g_sig != 0 && g_sig != 1)
+		ft_putstr_fd("\n", 1);
 	else
 	{
-		ft_putstr_fd("^C\n", 2);
-		prompt();
+		ft_putstr_fd("^C\n", 1);
+	//	write(1, "^C\n", 3);
+		prompt(NULL);
+		g_sig = 1;
 	}
 }
 
@@ -34,32 +36,45 @@ void	handler_sigquit(int num)
 int	main(int argc, char **argv, char **envp)
 {
 	t_env	env;
-	t_list	*cmd_tmp;
-	t_list_cmd *cmd;
-	char	*line;
+	t_list		*cmd_tmp;
+	t_list_cmd	*cmd;
+	t_termcap	termcap;
 	int	ret;
+	int	num = 0;
 
-	(void)argc;
-	(void)argv;
-	g_sig = 0;
-	env = copy_env(envp, 1, 0);
-	if (env.var_env == NULL)
-		return (EXIT_FAILURE);
-	signal(SIGINT, handler_sigint);
-	signal(SIGQUIT, handler_sigquit);
-	while (env.exit == 0)
+	init(argc, argv, &cmd_tmp, &cmd);
+	if (init2(&env, envp, &termcap) == 1)
+		return (process_end(&env, EXIT_FAILURE, cmd_tmp, cmd));
+//	while (env.exit == 0)
+	while (num < 4)
 	{
-		line = NULL;
-		cmd_tmp = NULL;
+		prompt(&termcap);
+		swap_way_icanon_echo(0);
+		ret = process_read(&termcap);
+		termcap.line = NULL;
 		cmd = NULL;
-		prompt();
-		ret = get_next_line(0, &line);
-		if (ret == -1)
+		cmd_tmp = NULL;
+		if (termcap.history != NULL && ret != 2)
+			termcap.line = ft_strdup(termcap.history->content);
+		else
+		{
+			if ((termcap.line = malloc(sizeof(char))) == NULL)
+				return (-1);
+			termcap.line[0] = '\0';
+		}
+
+//printf("input = %s\n", termcap.history->content);
+//print_hist(&termcap.history);
+		swap_way_icanon_echo(1);
+		num++;
+	//	process_end(&env, EXIT_SUCCESS, cmd_tmp, cmd);
+//		ret = get_next_line(0, &line);
+//printf("1\n");
+	/*	if (ret == -1)
 			return (process_end(&env, EXIT_FAILURE, cmd_tmp, cmd));
-		if (ret > 0)
-			ret = analysis_input(&line, -1, &cmd_tmp);
-		free(line);
-		//print_lst(cmd_tmp);
+		if (ret == 0)
+			ret = analysis_input(&termcap.line, -1, &cmd_tmp);
+		free(termcap.line);
 		if (ret == -1 )
 			return (process_end(&env, EXIT_FAILURE, cmd_tmp, cmd));
 		if (ret == 0)
@@ -70,9 +85,8 @@ int	main(int argc, char **argv, char **envp)
 			process_shell(&env, &cmd);
 		process_end(&env, EXIT_SUCCESS, cmd_tmp, cmd);
 		if (env.exit == 1)
-			clear_env(&env);
-		//print_struct_complete(&cmd);
+			clear_env(&env);*/
 	}
-	//return (process_end(&env, EXIT_SUCCESS, cmd_tmp, cmd));
+//	print_hist(&termcap.history);
 	return (env.return_value);
 }
