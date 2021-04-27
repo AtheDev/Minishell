@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 22:00:04 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/26 22:43:28 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/27 15:41:12 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,15 +110,28 @@ int	check_char(char *buff, t_termcap *t)
 	{
 		if (t->size_prompt < t->pos_cursor)
 		{
-			int	size = ft_strlen(t->input) - 1;
+	int	size = ft_strlen(t->input) - 1;
+			if (((int)ft_strlen(t->input) + t->size_prompt > t->rows_window) && (t->cols_cursor == 1))
+			{
+				tputs(tgoto(t->move_cursor, t->cols_window, t->rows_cursor - 2), 1, &ft_putchar);
+				tputs(t->del_char, 0, &ft_putchar);
+				t->input = delete_char(t->input, &size);
+				t->pos_cursor--;
+			}
+			else
+			{
+		
 			tputs(t->move_left, 0, &ft_putchar);
 			tputs(t->del_char, 0, &ft_putchar);
 			t->input = delete_char(t->input, &size);
 			t->pos_cursor--;
+			}
 		}
 		return (2);
 	}
 	else if (buff[0] == 27)
+		return (2);
+	else if (ft_isprint(buff[0]) == 0)
 		return (2);
 	else
 	{
@@ -134,6 +147,8 @@ int	process_read(t_termcap *t)
 	int	ret;
 	int	new_line;
 
+get_pos_cursor(t);
+get_size_window(t);
 	new_line = 1;
 	t->pos_hist = 0;
 	t->pos_cursor = t->size_prompt;
@@ -157,6 +172,9 @@ int	process_read(t_termcap *t)
 			t->input = ft_my_strjoin(t->input, buff);
 		if (new_line == 2)
 			new_line = 1;
+get_pos_cursor(t);
+get_size_window(t);
+/*printf("cur_r=%d/cur_c=%d", t->rows_cursor, t->cols_cursor);*/
 	}
 	ret = 0;
 	if (new_line == 0 && g_sig == 0 && t->input != NULL)
