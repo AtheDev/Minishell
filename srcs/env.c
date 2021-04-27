@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:06:13 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/15 22:46:13 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/27 16:26:33 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,12 @@ t_env	copy_env(char **envp, int init, size_t i)
 
 	while (envp[i] != NULL)
 		i++;
-	env.size = i;
+	env.size = i + 1;
 	env.var_env = malloc(sizeof(char *) * (i + 1));
 	if (env.var_env == NULL)
 		return (env);
 	i = -1;
-	while (++i < env.size)
+	while (++i < (env.size - 1))
 	{
 		if (ft_strncmp(envp[i], "SHLVL=", 6) == 0 && init == 1)
 			env.var_env[i] = inc_shlvl(envp[i]);
