@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:32:58 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/20 11:59:35 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/27 19:43:06 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,7 @@ char	*clean_line(char *str)
 	tmp = my_substr(str, 0, i, -1);
 	if (tmp == NULL)
 		return (NULL);
-	str = tmp;
-	return (str);
+	return (tmp);
 }
 
 int		delete_two_char(char **line, int *i)

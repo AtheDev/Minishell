@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 22:00:04 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 15:43:23 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/28 16:47:36 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ int	save_history(char *input, t_list **history, t_termcap *t)
 {
 	t_list	*new;
 
-//	if (input == NULL)
-//		return (1);
 	if (*history != NULL)
 	{
 		if (ft_strncmp((*history)->content, input, ft_strlen(input) + 1) == 0)
@@ -196,15 +194,16 @@ int	process_read(t_termcap *t)
 		if ((new_line = check_char(buff, t)) == 0)
 			break ;
 		if (new_line == 1)
-			t->input = ft_my_strjoin(t->input, buff);
+			if ((t->input = ft_my_strjoin(t->input, buff)) == NULL)
+				return (error_msg(2, ' '));	// -1
 		get_pos_cursor(t);
 		get_size_window(t);
 	}
 	ret = 0;
 	if (new_line == 0 && g_sig == 0 && t->input != NULL)
-		ret = save_history(t->input, &t->history, t);
+		ret = save_history(t->input, &t->history, t); // ret = 0 || -1
 	else if (new_line == 0 && t->input == NULL)
-		return (2);
+		return (2);					// 2
 	return (ret);
 }
 
@@ -213,19 +212,22 @@ int	loop_read(t_termcap *termcap)
 	int	ret;
 
 	prompt(termcap);
-	swap_way_icanon_echo(0);
+	if (swap_way_icanon_echo(0) != 0)
+		return (-1);					// -1
 	ret = process_read(termcap);
-	if (termcap->history != NULL && ret != 2)
+	if (termcap->history != NULL && ret == 0)
 		termcap->line = ft_strdup(termcap->history->content);
-	else
+	else if (ret == 2)
 	{
-		if ((termcap->line = malloc(sizeof(char))) == NULL)
-			return (-1);
-		termcap->line[0] = '\0';
+		if ((termcap->line = malloc(sizeof(char))) != NULL)
+			termcap->line[0] = '\0';
 	}
 	if (termcap->input != NULL)
 		free(termcap->input);
 	termcap->input = NULL;
-	swap_way_icanon_echo(1);
-	return (ret);
+	if (swap_way_icanon_echo(1) != 0)
+		ret = -1;
+	if (termcap->line == NULL)
+		return (error_msg(2, ' '));			// -1
+	return (ret);						// 2 || -1 || 0
 }

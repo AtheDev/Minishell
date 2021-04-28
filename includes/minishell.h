@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/26 19:28:54 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/28 16:47:28 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 # include <errno.h>
 # include <term.h>
 # include <termios.h>
+#include <sys/ioctl.h>
 
 # define CHAR_PROTEC "\"\\`$\\n"
 # define ULL_LIMIT_MAX 9223372036854775807
@@ -65,6 +66,10 @@ typedef struct	s_termcap
 	t_list	*history;
 	int	pos_hist;
 	int	tot_hist;
+	int	rows_cursor;
+	int	cols_cursor;
+	int	rows_window;
+	int	cols_window;
 	int	pos_cursor;
 	int	tot_cursor;
 	int	size_prompt;
@@ -74,6 +79,7 @@ typedef struct	s_termcap
 	char	*del_line;
 	char	*del_char;
 	char	*move_left;
+	char	*move_cursor;
 }			t_termcap;
 
 /*
@@ -298,9 +304,11 @@ int	search_path(char **arg, t_env **env, int i, int ret);
 /*
 	***** PROCESS END *****
 */
-int	process_end(t_env *env, int end, t_list *cmd_tmp, t_list_cmd *tmp);
+int	process_end_ko(t_env *env, t_termcap *t, t_list *cmd_tmp, t_list_cmd *tmp);
+int	process_end_ok(t_list *cmd_tmp, t_list_cmd *tmp);
 void	clear_cmd(t_list_cmd *cmd);
 void	clear_cmd_tmp(t_list *cmd);
+void	clear_termcap(t_termcap *t);
 
 /*
 	***** PROMPT *****
@@ -310,7 +318,7 @@ int	prompt(t_termcap *t);
 /*
 	***** ERROR *****
 */
-int	error_msg(int num, char c);
+int	error_msg(int num, char c/*, t_env *env*/);
 int	error_msg_with_string(int num, char *str);
 int	putstr(char *str1, char *str2, char *str3);
 int	error_term(int num, char *str);
@@ -327,19 +335,26 @@ void	print_hist(t_list **hist);
 /*
 	***** INIT *****
 */
-void	init(int argc, char **argv, t_list **cmd_tmp, t_list_cmd **cmd);
+void	init(t_list **cmd_tmp, t_list_cmd **cmd, t_termcap *t);
 int	init2(t_env *env, char **envp, t_termcap *t);
 
 /*
 	***** READ *****
 */
 int	process_read(t_termcap *termcap);
+int	loop_read(t_termcap *t);
 
 /*
 	***** TERMCAP *****
 */
 int	init_term(t_env *env);
 int	swap_way_icanon_echo(int num);
+
+/*
+	***** CURSOR *****
+*/
+void	get_pos_cursor(t_termcap *t);
+int	get_size_window(t_termcap *t);
 
 /*
 	***** SIGNAL *****

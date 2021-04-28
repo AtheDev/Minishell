@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 00:47:49 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/16 18:22:10 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/27 16:58:34 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,10 @@ int		is_escaped(char *line, int i)
 
 int		before_char(char *line, int i, char c)
 {
+	if (i == 0 && ((c == ';' && line[i + 1] == c) || (c == '|' && line[i + 1] == c)))
+		return (error_msg(5, c));
+	if (i == 0 && (c == ';' || c == '|'))
+		return (error_msg(1, c));
 	while (--i >= 0)
 	{
 		if (line[i] != ' ' &&

@@ -8,7 +8,8 @@ SRCS = srcs/main.c srcs/env.c srcs/get_env.c srcs/gnl.c srcs/analysis_input.c \
 	srcs/builtin/echo.c srcs/builtin/cd.c srcs/builtin/add_or_delete_var_env.c \
 	srcs/builtin/utils.c srcs/builtin/unset.c srcs/builtin/env.c \
 	srcs/builtin/export.c srcs/builtin/exit.c srcs/pipe.c srcs/path.c \
-	srcs/redirect.c srcs/termcap.c srcs/init.c srcs/read.c
+	srcs/redirect.c srcs/termcap.c srcs/init.c srcs/read.c srcs/cursor.c \
+	srcs/signal.c
 
 OBJS = $(SRCS:.c=.o)
 

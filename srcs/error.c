@@ -6,29 +6,36 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 22:15:53 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/22 20:33:42 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/27 19:35:21 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	error_msg(int num, char c)
+int	error_msg(int num, char c/*, t_env *env*/)
 {
-	if (num == 1)
+	if (num == 1 || num == 5)
 	{
 		ft_putstr_fd("minishell: syntax error near unexpected symbol « ", 2);
 		write(2, &c, 1);
+		if (num == 5)
+			write(2, &c, 1);
 		ft_putstr_fd(" »\n", 2);
+	//	env->return_value = 2;
+		return (1);
 	}
 	if (num == 2)
 	{
 		ft_putstr_fd("minishell: error: malloc failed\n", 2);
+	//	env->return_value = 1;
+	//	env->exit = 1;
 		return (-1);
 	}
 	if (num == 3)
 		ft_putstr_fd("minishell: multiline is not accepted\n", 2);
 	if (num == 4)
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
+//	env->return_value = 1;
 	return (1);
 }
 

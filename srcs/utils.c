@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:36:48 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/22 20:33:14 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/28 15:34:09 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ char	*my_substr(char *s, int start, int len, int i)
 		str[i] = '\0';
 	}
 	free(s);
+	s = NULL;
 	return (str);
 }
 
