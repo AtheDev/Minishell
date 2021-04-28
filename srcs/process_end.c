@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:16:56 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/21 14:52:16 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/28 15:44:09 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,24 @@ void	clear_cmd(t_list_cmd *cmd)
 	}
 }
 
+void	clear_termcap(t_termcap *t)
+{
+	if (t->history != NULL)
+	{
+		clear_cmd_tmp(t->history);
+		t->history = NULL;
+	}
+}
+
 int		process_end(t_env *env, int end, t_list *cmd_tmp, t_list_cmd *cmd)
 {
 	if (end == EXIT_FAILURE)
 		clear_env(env);
 	if (cmd_tmp != NULL)
 		clear_cmd_tmp(cmd_tmp);
+	cmd_tmp = NULL;
 	if (cmd != NULL)
 		clear_cmd(cmd);
+	cmd = NULL;
 	return (end);
 }

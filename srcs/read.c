@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 22:00:04 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/27 15:41:12 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/28 15:43:23 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@ int	save_history(char *input, t_list **history, t_termcap *t)
 {
 	t_list	*new;
 
-	if (input == NULL)
-		return (1);
+//	if (input == NULL)
+//		return (1);
 	if (*history != NULL)
 	{
 		if (ft_strncmp((*history)->content, input, ft_strlen(input) + 1) == 0)
 			return (0);
 	}
-	if ((new = ft_lstnew(input)) == NULL)
-		return (-1);
+	if ((new = ft_lstnew(ft_strdup(input))) == NULL)
+		return (error_msg(2, ' '));
 	if (*history != NULL)
 	{
 		new->next = *history;
@@ -59,12 +59,18 @@ void	print_history(t_list **hist, int index, char **input, t_termcap *t)
 	if (t->pos_hist > 0)
 	{
 		ft_putstr_fd((*hist)->content, 1);
+		if (*input != NULL)
+			free(*input);
+		*input = NULL;
 		*input = ft_strdup((*hist)->content);
 		t->pos_cursor = ft_strlen(*input) + t->size_prompt;
 	}
 	else if (t->pos_hist == 0)
 	{
 		ft_putstr_fd(t->input_tmp, 1);
+		if (*input != NULL)
+			free(*input);
+		*input = NULL;
 		*input = ft_strdup(t->input_tmp);
 		t->pos_cursor = ft_strlen(*input) + t->size_prompt;	
 	}
@@ -76,6 +82,8 @@ int	check_char(char *buff, t_termcap *t)
 	if (buff[0] == '\n')
 	{
 		write(2, "\n", 1);
+		if (t->input_tmp != NULL)
+			free(t->input_tmp);
 		return (0);
 	}
 	else if (buff[0] == '\x1b' && buff[1] == '[' && buff[2] == 'A')
@@ -83,9 +91,19 @@ int	check_char(char *buff, t_termcap *t)
 		if (t->history != NULL)
 		{
 			if (t->input != NULL && t->pos_hist == 0)
+			{
+				if (t->input_tmp != NULL)
+					free(t->input_tmp);
+				t->input_tmp = NULL;
 				t->input_tmp = ft_strdup(t->input);
+			}
 			else if (t->input == NULL && t->pos_hist == 0)
+			{
+				if (t->input_tmp != NULL)
+					free(t->input_tmp);
+				t->input_tmp = NULL;
 				t->input_tmp = ft_strdup("");
+			}
 			tputs(t->del_line, 0, &ft_putchar);
 			if (t->pos_hist != t->tot_hist)
 				t->pos_hist++;
@@ -119,8 +137,7 @@ int	check_char(char *buff, t_termcap *t)
 				t->pos_cursor--;
 			}
 			else
-			{
-		
+			{	
 			tputs(t->move_left, 0, &ft_putchar);
 			tputs(t->del_char, 0, &ft_putchar);
 			t->input = delete_char(t->input, &size);
@@ -141,46 +158,74 @@ int	check_char(char *buff, t_termcap *t)
 	return (1);
 }
 
+void	init_read(t_termcap *t, int *new_line)
+{
+	get_pos_cursor(t);
+	get_size_window(t);
+	*new_line = 1;
+	t->pos_hist = 0;
+	t->pos_cursor = t->size_prompt;
+	g_sig = 0;
+	t->input_tmp = NULL;
+}
+
+void	reset_after_g_sig(t_termcap *t)
+{
+	g_sig = 0;
+	if (t->input != NULL)
+		free(t->input);
+	t->input = NULL;
+	t->pos_hist = 0;
+	if (t->input_tmp != NULL)
+		free(t->input_tmp);
+	t->input_tmp = NULL;
+}
+
 int	process_read(t_termcap *t)
 {
 	char	buff[BUFFER_SIZE + 1];
 	int	ret;
 	int	new_line;
 
-get_pos_cursor(t);
-get_size_window(t);
-	new_line = 1;
-	t->pos_hist = 0;
-	t->pos_cursor = t->size_prompt;
-	g_sig = 0;
-	t->input_tmp = NULL;
-	while ((ret = read(0, &buff, BUFFER_SIZE)) && new_line == 1)
+	init_read(t, &new_line);
+	while ((ret = read(0, &buff, BUFFER_SIZE)))
 	{
 		buff[ret] = '\0';
 		if (g_sig == 1)
-		{
-			g_sig = 0;
-			if (t->input != NULL)
-				free(t->input);
-			t->input = NULL;
-			
-		}
-		new_line = check_char(buff, t);
-		if (new_line == -1 || new_line == 0)
+			reset_after_g_sig(t);
+		if ((new_line = check_char(buff, t)) == 0)
 			break ;
 		if (new_line == 1)
 			t->input = ft_my_strjoin(t->input, buff);
-		if (new_line == 2)
-			new_line = 1;
-get_pos_cursor(t);
-get_size_window(t);
-/*printf("cur_r=%d/cur_c=%d", t->rows_cursor, t->cols_cursor);*/
+		get_pos_cursor(t);
+		get_size_window(t);
 	}
 	ret = 0;
 	if (new_line == 0 && g_sig == 0 && t->input != NULL)
 		ret = save_history(t->input, &t->history, t);
 	else if (new_line == 0 && t->input == NULL)
 		return (2);
-	t->input = NULL;
+	return (ret);
+}
+
+int	loop_read(t_termcap *termcap)
+{
+	int	ret;
+
+	prompt(termcap);
+	swap_way_icanon_echo(0);
+	ret = process_read(termcap);
+	if (termcap->history != NULL && ret != 2)
+		termcap->line = ft_strdup(termcap->history->content);
+	else
+	{
+		if ((termcap->line = malloc(sizeof(char))) == NULL)
+			return (-1);
+		termcap->line[0] = '\0';
+	}
+	if (termcap->input != NULL)
+		free(termcap->input);
+	termcap->input = NULL;
+	swap_way_icanon_echo(1);
 	return (ret);
 }
