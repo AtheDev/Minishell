@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 15:39:51 by adupuy            #+#    #+#             */
-/*   Updated: 2021/03/27 10:04:49 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/28 20:15:44 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ typedef struct	s_list
 	struct s_list	*next;
 }				t_list;
 
-long long				ft_atoi(const char *str);
+long long		ft_atoi(const char *str);
 
 void			ft_bzero(void *s, size_t n);
 
@@ -79,7 +79,8 @@ char			*ft_strjoin(char const *s1, char const *s2);
 char			*ft_strtrim(char const *s1, char const *set);
 
 char			**ft_split(char const *s, char c);
-void			*ft_free(char **split, int j);
+
+void			*ft_free_tab(char **split, int j);
 
 char			*ft_itoa(int c);
 
@@ -111,5 +112,9 @@ void			ft_lstiter(t_list *lst, void (*f)(void *));
 
 t_list			*ft_lstmap(t_list *lst, void *(*f)(void *),
 			void (*del)(void *));
+
+int				ft_putchar(int c);
+
+char			*ft_free(char *str);
 
 #endif

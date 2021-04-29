@@ -6,12 +6,12 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/18 11:16:27 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/15 19:26:33 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/28 20:01:38 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdio.h>
+
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char			*str;
