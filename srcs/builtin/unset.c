@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 13:10:10 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/20 15:13:15 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/29 22:46:52 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	check_arg_var(char **arg, int cmd)
 	{
 		if (ft_isalnum((*arg)[i]) == 0 && (*arg)[i] != '_')
 		{
-			if ((*arg)[i] == '=' && cmd == 1)
+			if ((*arg)[i] == '=' && cmd == 1 && i > 0)
 				return (0);
 			return (1);
 		}

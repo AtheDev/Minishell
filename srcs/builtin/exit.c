@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 14:13:05 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/21 17:13:07 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/30 00:23:46 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,10 @@ int	ft_exit(char **arg, t_env **env, int fork)
 			return ((*env)->return_value = error_msg_with_string(3, arg[0]));
 		val = ft_atoi(arg[1]) % 256;
 	}
-	(*env)->return_value = val;
+	else if (arg[1] == NULL && (*env)->return_value == 127 && fork == 0)
+		(*env)->return_value = 127;
+	if (arg[1] != NULL || (arg[1] == NULL && fork == 1))
+		(*env)->return_value = val;
 	(*env)->exit = 1;
 	return (0);
 }

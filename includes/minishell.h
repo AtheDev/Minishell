@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 16:47:28 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/29 13:40:59 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,7 +318,7 @@ int	prompt(t_termcap *t);
 /*
 	***** ERROR *****
 */
-int	error_msg(int num, char c/*, t_env *env*/);
+int	error_msg(int num, char c);
 int	error_msg_with_string(int num, char *str);
 int	putstr(char *str1, char *str2, char *str3);
 int	error_term(int num, char *str);
@@ -337,11 +337,12 @@ void	print_hist(t_list **hist);
 */
 void	init(t_list **cmd_tmp, t_list_cmd **cmd, t_termcap *t);
 int	init2(t_env *env, char **envp, t_termcap *t);
+void	init_read(t_termcap *t);
 
 /*
 	***** READ *****
 */
-int	process_read(t_termcap *termcap);
+int	process_read(t_termcap *termcap, int ret, int new_line);
 int	loop_read(t_termcap *t);
 
 /*
@@ -355,6 +356,14 @@ int	swap_way_icanon_echo(int num);
 */
 void	get_pos_cursor(t_termcap *t);
 int	get_size_window(t_termcap *t);
+
+/*
+	***** HISTORY *****
+*/
+void	print_history(t_list **hist, int index, char **input, t_termcap *t);
+int	save_history(char *input, t_list **history, t_termcap *t);
+int	up_history(t_termcap *t);
+int	down_history(t_termcap *t);
 
 /*
 	***** SIGNAL *****

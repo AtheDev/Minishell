@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 22:00:04 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 19:47:58 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/29 13:44:52 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int		check_char(char *buff, t_termcap *t)
 	if (buff[0] == '\n')
 	{
 		if (t->input_tmp != NULL)
-			free(t->input_tmp);
+			t->input_tmp = ft_free(t->input_tmp);
 		return (write(1, "\n", 1) - 1);
 	}
 	else if (buff[0] == '\x1b' && buff[1] == '[' && buff[2] == 'A')
@@ -72,12 +72,10 @@ void	reset_after_g_sig(t_termcap *t)
 {
 	g_sig = 0;
 	if (t->input != NULL)
-		free(t->input);
-	t->input = NULL;
+		t->input = ft_free(t->input);
 	t->pos_hist = 0;
 	if (t->input_tmp != NULL)
-		free(t->input_tmp);
-	t->input_tmp = NULL;
+		t->input_tmp = ft_free(t->input_tmp);
 }
 
 int		process_read(t_termcap *t, int ret, int new_line)
@@ -124,8 +122,7 @@ int		loop_read(t_termcap *termcap)
 			termcap->line[0] = '\0';
 	}
 	if (termcap->input != NULL)
-		free(termcap->input);
-	termcap->input = NULL;
+		termcap->input = ft_free(termcap->input);
 	if (swap_way_icanon_echo(1) != 0)
 		ret = -1;
 	if (termcap->line == NULL)

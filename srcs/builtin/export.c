@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 13:45:29 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/20 15:03:40 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/29 23:20:39 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,25 +73,30 @@ int	ft_export(char **arg, t_env **env)
 {
 	int	i;
 	int	ret;
+	int	res;
 
 	i = 1;
 	ret = 0;
+	res = 0;
 	if (arg[i] == NULL)
 		return (sort_env(env, 0));
 	if (arg[i] != NULL)
 	{
 		while (arg[i] != NULL)
 		{
-			ret = check_arg_var(&arg[i], 1);
-			if (ret == 0)
+			res = check_arg_var(&arg[i], 1);
+			if (res == 0)
 			{
 				if (process_add_var_env(arg[i], env) != 0)
 					return (-1);
 			}
-			else if (ret == 1)
+			else if (res == 1)
+			{
 				error_msg_with_string(6, arg[i]);
+				ret = 1;
+			}
 			i++;
 		}
 	}
-	return (0);
+	return (ret);
 }

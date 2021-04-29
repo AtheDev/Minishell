@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 19:14:25 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 11:51:17 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/28 19:01:32 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,14 @@ void	init(t_list **cmd_tmp, t_list_cmd **cmd, t_termcap *t)
 	*cmd = NULL;
 	t->line = NULL;
 	t->input = NULL;
+}
+
+void	init_read(t_termcap *t)
+{
+	get_pos_cursor(t);
+	get_size_window(t);
+	t->pos_hist = 0;
+	t->pos_cursor = t->size_prompt;
+	g_sig = 0;
+	t->input_tmp = NULL;
 }

@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 18:25:03 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 19:48:13 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/28 20:20:52 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,7 @@ void	print_history(t_list **hist, int index, char **input, t_termcap *t)
 	else if (t->pos_hist == 0)
 		ft_putstr_fd(t->input_tmp, 1);
 	if (*input != NULL)
-		free(*input);
-	*input = NULL;
+		*input = ft_free(*input);
 	if (t->pos_hist > 0)
 		*input = ft_strdup((*hist)->content);
 	else if (t->pos_hist == 0)
@@ -67,8 +66,7 @@ int		up_history(t_termcap *t)
 	if (t->pos_hist == 0)
 	{
 		if (t->input_tmp != NULL)
-			free(t->input_tmp);
-		t->input_tmp = NULL;
+			t->input_tmp = ft_free(t->input_tmp);
 	}
 	if (t->input != NULL && t->pos_hist == 0)
 		t->input_tmp = ft_strdup(t->input);

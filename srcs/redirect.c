@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 17:59:17 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/21 15:00:13 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/28 20:17:21 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ char	**delete_redir_and_file(char **cmd, int nb)
 		{
 			new[++j] = ft_strdup(cmd[i]);
 			if (new[j] == NULL)
-				return (new = ft_free(new, i));
+				return (new = ft_free_tab(new, i));
 			i++;
 		}
 	}
 	new[++j] = NULL;
-	ft_free(cmd, check_nb_arg(cmd, 0));
+	ft_free_tab(cmd, check_nb_arg(cmd, 0));
 	return (new);
 }
 

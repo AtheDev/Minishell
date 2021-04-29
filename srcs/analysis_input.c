@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:26:08 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/27 18:55:08 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/29 13:39:34 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,14 @@
 
 int	analysis_quote(char *line, int *i)
 {
+	int	ret;
+
+	ret = 0;
 	if (line[*i] == '"')
-	{
-		if (check_double_quotes(line, i) != 0)
-			return (1);
-	}
+		ret = check_double_quotes(line, i);
 	if (line[*i] == '\'')
-	{
-		if (check_simple_quote(line, i) != 0)
-			return (1);
-	}
-	return (0);
+		ret = check_simple_quote(line, i);
+	return (ret);
 }
 
 int	analysis_sep(char **line, int *i, int *start_cmd, t_list **cmd)
@@ -66,7 +63,13 @@ int	parsing_input(char **line, int *i, t_list **cmd, int *start_cmd)
 	else if ((*line)[*i] == '#' && ((*line)[*i - 1] == ' ' ||
 	((*line)[*i - 1] == ';')) && is_escaped(*line, *i - 2) == 0)
 	{
-		*line = my_substr(*line, 0, *i - 1, -1);
+		(*i)--;
+		while ((*line)[*i] == ' ')
+			(*i)--;
+		if ((*line)[*i] == ';')
+			return (3);
+		if ((*line = my_substr(*line, 0, *i + 1, -1)) == NULL)
+			return (error_msg(2, ' '));
 		return (2);
 	}
 	else if (dollar(*line, *i) == 0 && (*line)[*i + 1] != '\0'
@@ -94,14 +97,14 @@ int	analysis_input(char **line, int i, t_list **cmd)
 	while ((*line)[++i] != '\0')
 	{
 		ret = parsing_input(line, &i, cmd, &start_cmd);
-		if (ret == 2)
+		if (ret == 2 || ret == 3)
 			break ;
 		if (ret == 1 || ret == -1)
 			return (ret);
 	}
-	if ((*line)[i] == '\0' && (*line)[i - 2] != ';')
+	if (((*line)[i] == '\0' && (*line)[i - 2] != ';') || ret == 2)
 		ret = analysis_sep(line, &i, &start_cmd, cmd);
-	if (ret < 1)
+	if (ret <= 1)
 		return (ret);
 	return (0);
 }

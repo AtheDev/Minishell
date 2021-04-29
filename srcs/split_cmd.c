@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 10:08:32 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/20 11:03:11 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/28 20:16:26 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ char	**my_split(char *str, int j)
 		split[j] = new_str(str, i, nb_char);
 		if (split[j] == NULL)
 		{
-			split = ft_free(split, j);
+			split = ft_free_tab(split, j);
 			return (split);
 		}
 		i = i + nb_char + 1;

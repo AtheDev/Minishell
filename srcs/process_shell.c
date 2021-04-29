@@ -6,25 +6,34 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 11:36:44 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/22 15:39:17 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/30 00:26:56 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	return_wait(t_env *env, int *status)
+void	return_wait(t_env *env, int cpid)
 {
-	if (WIFEXITED(*status))
-		env->return_value = WEXITSTATUS(*status);
-	if (WIFSIGNALED(*status))
-		env->return_value = WTERMSIG(*status) + 128;
+	int	status = 0;
+
+	do {
+		waitpid(cpid, &status, WUNTRACED | WCONTINUED);
+		if (WIFEXITED(status))
+			env->return_value = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			env->return_value = WTERMSIG(status) + 128;
+	} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 	g_sig = 0;
 }
 
 int	exec_sh(t_list_cmd *cmd, t_env *env)
 {
 	if (search_path(cmd->arg_cmd, &env, -1, 1) != 0)
+	{
+		error_msg_with_string(8, cmd->arg_cmd[0] + 1);
+		exit(127);
 		return (env->return_value = 127);
+	}
 	else
 	{
 		errno = 0;
@@ -54,7 +63,6 @@ int	exec_pipe_cmd_next(t_list_cmd *cmd, t_env *env)
 void	exec_pipe_cmd(t_list_cmd **cmd, t_env *env, int nb_cmd)
 {
 	pid_t	pid;
-	int	status;
 
 	while (nb_cmd > 0)
 	{
@@ -70,19 +78,19 @@ void	exec_pipe_cmd(t_list_cmd **cmd, t_env *env, int nb_cmd)
 		else
 		{
 			cancel_redirect(*cmd, env);
+			return_wait(env, pid);
 			*cmd = (*cmd)->next_cmd;
 			nb_cmd--;
 		}
 	}
-	g_sig = 1;
-	while (waitpid(-1, &status, 0) > 0);
-	return_wait(env, &status);
+	g_sig = 2;
+//	return_wait(env, -1);
+	
 }
 
 void	exec_one_cmd(t_list_cmd **cmd, t_env *env)
 {
 	pid_t	pid;
-	int	status;
 
 	errno = 0;
 	if ((pid = fork()) == -1)
@@ -94,9 +102,8 @@ void	exec_one_cmd(t_list_cmd **cmd, t_env *env)
 	}
 	else
 	{
-		g_sig = 1;
-		wait(&status);
-		return_wait(env, &status);
+		g_sig = 2;
+		return_wait(env, pid);
 	}
 }
 

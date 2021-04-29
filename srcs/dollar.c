@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 09:56:23 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/20 11:42:46 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/29 14:07:40 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,10 @@ int	var_is_digit_or_interrogation_point
 	(char **line, int *i, char *tmp, t_env *env)
 {
 	char	*tmp2;
+	char	*num;
 
 	tmp2 = NULL;
+	num = NULL;
 	if ((ft_isdigit((*line)[*i + 1]) == 1))
 		return (delete_two_char(line, i));
 	if ((*line)[*i + 1] == '?')
@@ -49,15 +51,24 @@ int	var_is_digit_or_interrogation_point
 		tmp2 = ft_substr(*line, *i + 1, ft_strlen(*line) - *i);
 		if (tmp != NULL && tmp2 != NULL)
 		{
-			tmp = ft_strjoin(tmp, ft_itoa(env->return_value));
-			if (tmp != NULL)
+			if ((num = ft_itoa(env->return_value)) != NULL)
 			{
-				*line = ft_strjoin(tmp, tmp2);
-				if (*line != NULL)
-					return (0);
+				tmp = ft_my_strjoin(tmp, num);
+				if (tmp != NULL)
+				{
+					*line = ft_free(*line);
+					*line = ft_strjoin(tmp, tmp2);
+					process_free(tmp, tmp2);
+					if (num != NULL)
+						num = ft_free(num);
+					if (*line != NULL)
+						return (0);
+				}
 			}
 		}
 		process_free(tmp, tmp2);
+		if (num != NULL)
+			num = ft_free(num);
 		return (error_msg(2, ' '));
 	}
 	return (1);
