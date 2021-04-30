@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 16:50:11 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/21 14:59:00 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/30 13:58:37 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	redirect(int fd1, int fd2)
 	}
 }
 
-void	cancel_redirect(t_list_cmd *cmd, t_env *env)
+void	cancel_redirect(t_list_cmd *cmd, t_env *env, int fork)
 {
 	int	i;
 
@@ -69,7 +69,11 @@ void	cancel_redirect(t_list_cmd *cmd, t_env *env)
 	cmd->fd[1] = 0;
 	dup2(env->fd[0], 0);
 	dup2(env->fd[1], 1);
+
 	i = -1;
-	while (++i < cmd->nb_redir)
-		close(cmd->fd_redir[i]);
+	if (fork == 0)
+	{
+		while (++i < cmd->nb_redir)
+			close(cmd->fd_redir[i]);
+	}
 }

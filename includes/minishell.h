@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/29 13:40:59 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/30 14:00:35 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,7 +286,7 @@ char	**free_tab_string(char **tab_string);
 int	count_pipes(t_list_cmd **cmd);
 int	create_pipe(t_list_cmd *cmd1, t_list_cmd *cmd2);
 void	redirect(int fd1, int fd2);
-void	cancel_redirect(t_list_cmd *cmd, t_env *env);
+void	cancel_redirect(t_list_cmd *cmd, t_env *env, int fork);
 
 /*
 	***** REDIRECT *****

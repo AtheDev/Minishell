@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 11:36:44 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/30 00:26:56 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/30 14:01:55 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	exec_pipe_cmd(t_list_cmd **cmd, t_env *env, int nb_cmd)
 			exec_pipe_cmd_next(*cmd, env);
 		else
 		{
-			cancel_redirect(*cmd, env);
+			cancel_redirect(*cmd, env, 1);
 			return_wait(env, pid);
 			*cmd = (*cmd)->next_cmd;
 			nb_cmd--;
@@ -131,7 +131,7 @@ int	process_shell(t_env *env, t_list_cmd **cmd)
 			if (is_builtin(env, cmd, 0) == 1)
 				exec_one_cmd(cmd, env);
 			if ((*cmd)->nb_redir != 0)
-				cancel_redirect(*cmd, env);
+				cancel_redirect(*cmd, env, 0);
 			*cmd = (*cmd)->next_cmd;
 		}
 	}

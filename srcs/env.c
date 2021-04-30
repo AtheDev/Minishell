@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:06:13 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 11:31:54 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/30 14:17:46 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	clear_env(t_env *env)
 		free(env->var_env[i]);
 	free(env->var_env);
 	env->var_env = NULL;
+	close(env->fd[0]);
+	close(env->fd[1]);
 }
 
 void	add_elt_env(t_env *env)
