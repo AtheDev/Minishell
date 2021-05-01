@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 22:15:53 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/29 18:05:48 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/01 12:44:38 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ int	error_msg_with_string(int num, char *str)
 		putstr("env: «", str, "» : no such file or directory\n");
 	if (num == 8)
 		putstr("minishell: ", str, ": command not found\n");
+	if (num == 9)
+		putstr("minishell: ", str, ": no such file or directory\n");
 	return (1);
 }
 
@@ -74,4 +76,24 @@ int	error_term(int num, char *str)
 		ft_putstr_fd("database (or have too few informations).\n", 2);
 	}
 	return (-1);
+}
+
+int	error_stat_and_path(int num, char *str)
+{
+	if (num == 1)
+	{
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": Is a directory\n", 2);
+	}
+	if (num == 2)
+	{
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": Permission denied\n", 2);
+	}
+	if (num == 3)
+	{
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": Command not found\n", 2);
+	}
+	return (1);
 }

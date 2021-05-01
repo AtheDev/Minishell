@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/30 14:00:35 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/01 12:59:24 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,7 +299,7 @@ int	close_redir(t_list_cmd **cmd);
 /*
 	***** PATH *****
 */
-int	search_path(char **arg, t_env **env, int i, int ret);
+int	search_path(char **arg, t_env **env, int ret);
 
 /*
 	***** PROCESS END *****
@@ -322,6 +322,7 @@ int	error_msg(int num, char c);
 int	error_msg_with_string(int num, char *str);
 int	putstr(char *str1, char *str2, char *str3);
 int	error_term(int num, char *str);
+int	error_stat_and_path(int num, char *str);
 
 /*
 	***** PRINT *****

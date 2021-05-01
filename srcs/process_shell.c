@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 11:36:44 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/30 14:01:55 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/01 12:59:50 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,12 @@ void	return_wait(t_env *env, int cpid)
 
 int	exec_sh(t_list_cmd *cmd, t_env *env)
 {
-	if (search_path(cmd->arg_cmd, &env, -1, 1) != 0)
+	int	ret;
+
+	if ((ret = search_path(cmd->arg_cmd, &env, 1)) != 0)
 	{
-		error_msg_with_string(8, cmd->arg_cmd[0] + 1);
-		exit(127);
-		return (env->return_value = 127);
+		exit(env->return_value);
+		return (1);
 	}
 	else
 	{
@@ -40,6 +41,7 @@ int	exec_sh(t_list_cmd *cmd, t_env *env)
 		if (execve(cmd->arg_cmd[0], cmd->arg_cmd, env->var_env) == -1)
 			strerror(errno);
 		env->return_value = 1;
+		exit(1);
 		return (1);
 	}
 	return (0);
