@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 22:00:04 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/29 13:44:52 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/01 20:57:30 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ int		check_char(char *buff, t_termcap *t)
 			t->input_tmp = ft_free(t->input_tmp);
 		return (write(1, "\n", 1) - 1);
 	}
+	else if (buff[0] == '\04' && t->pos_cursor == t->size_prompt)
+		return (-2);
 	else if (buff[0] == '\x1b' && buff[1] == '[' && buff[2] == 'A')
 	{
 		if (t->history != NULL)
@@ -68,7 +70,7 @@ int		check_char(char *buff, t_termcap *t)
 	return (write(1, &buff[0], 1));
 }
 
-void	reset_after_g_sig(t_termcap *t)
+void	reset_after_g_sig(t_termcap *t, t_env *env)
 {
 	g_sig = 0;
 	if (t->input != NULL)
@@ -76,9 +78,10 @@ void	reset_after_g_sig(t_termcap *t)
 	t->pos_hist = 0;
 	if (t->input_tmp != NULL)
 		t->input_tmp = ft_free(t->input_tmp);
+	env->return_value = 130;
 }
 
-int		process_read(t_termcap *t, int ret, int new_line)
+int		process_read(t_termcap *t, int ret, int new_line, t_env *env)
 {
 	char	buff[BUFFER_SIZE + 1];
 
@@ -87,7 +90,7 @@ int		process_read(t_termcap *t, int ret, int new_line)
 	{
 		buff[ret] = '\0';
 		if (g_sig == 1)
-			reset_after_g_sig(t);
+			reset_after_g_sig(t, env);
 		if ((new_line = check_char(buff, t)) <= 0)
 			break ;
 		if (new_line == 1)
@@ -101,19 +104,19 @@ int		process_read(t_termcap *t, int ret, int new_line)
 		ret = save_history(t->input, &t->history, t);
 	else if (new_line == 0 && t->input == NULL)
 		return (2);
-	if (new_line == -1)
-		return (-1);
+	if (new_line == -1 || new_line == -2)
+		return (new_line);
 	return (ret);
 }
 
-int		loop_read(t_termcap *termcap)
+int		loop_read(t_termcap *termcap, t_env *env)
 {
 	int	ret;
 
 	prompt(termcap);
 	if (swap_way_icanon_echo(0) != 0)
 		return (-1);
-	ret = process_read(termcap, 0, 1);
+	ret = process_read(termcap, 0, 1, env);
 	if (termcap->history != NULL && ret == 0)
 		termcap->line = ft_strdup(termcap->history->content);
 	else if (ret == 2)
@@ -125,7 +128,7 @@ int		loop_read(t_termcap *termcap)
 		termcap->input = ft_free(termcap->input);
 	if (swap_way_icanon_echo(1) != 0)
 		ret = -1;
-	if (termcap->line == NULL)
+	if (termcap->line == NULL && (ret == 0 || ret == 2))
 		return (error_msg(2, ' '));
 	return (ret);
 }
