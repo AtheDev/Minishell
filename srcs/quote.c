@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 00:12:17 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 22:02:10 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/02 12:53:05 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	check_double_quotes(char *line, int *i)
 	tmp = ft_substr(line, index, *i - index);
 	if (tmp == NULL)
 		return (error_msg(2, ' '));
-	ret = check_word(tmp, 0, 1);
 	free(tmp);
 	return (ret);
 }

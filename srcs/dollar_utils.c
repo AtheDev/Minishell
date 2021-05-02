@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 15:04:11 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/29 14:03:29 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/02 12:53:30 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ int		check_variable(char *line, int *i, int quote)
 	*i += 1;
 	while (line[*i] != '\0' && (ft_isalnum(line[*i]) == 1 || line[*i] == '_'))
 		(*i)++;
-	if (line[*i] == '`')
-		return (error_msg(3, ' '));
 	if (line[*i] == '\\' && line[*i + 1] == '\0')
 		return (error_msg(3, ' '));
 	if (line[*i] == '|' && empty_line(&line, *i + 1) == 1 && quote == 0)

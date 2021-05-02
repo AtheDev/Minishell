@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 00:47:49 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 20:22:06 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/02 12:53:19 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,7 @@ int		before_char(char *line, int i, char c)
 		((line[i] == ';' && is_escaped(line, i - 1) == 0)
 		|| (line[i] == '|' && is_escaped(line, i - 1) == 0)
 		|| (line[i] == '<' && is_escaped(line, i - 1) == 0)
-		|| (line[i] == '>' && is_escaped(line, i - 1) == 0)
-		|| (line[i] == '`' && is_escaped(line, i - 1) == 0)
-		|| (line[i] == '&' && is_escaped(line, i - 1) == 0)))
+		|| (line[i] == '>' && is_escaped(line, i - 1) == 0)))
 		{
 			if (c == ';' || c == '|')
 				return (error_msg(1, c));
