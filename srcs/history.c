@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 18:25:03 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 20:20:52 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/02 11:25:38 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,28 @@ void	print_history(t_list **hist, int index, char **input, t_termcap *t)
 	*hist = hist_tmp;
 }
 
+void	delete_line_history(t_termcap *t)
+{
+	int	count;
+	int	size;
+
+	count = 0;
+	size = 0;
+	if (t->input != NULL)
+		size = (int)ft_strlen(t->input);
+	if (size + t->size_prompt >= t->cols_window)
+	{
+		count = ((int)ft_strlen(t->input) + t->size_prompt) / t->cols_window;
+		while (count > 0)
+		{
+			tputs(t->del_line, 0, &ft_putchar);
+			tputs(tgoto(t->move_cursor, 1, t->rows_cursor - 2), 0, &ft_putchar);
+			t->rows_cursor--;
+			count--;
+		}
+	}
+}
+
 int		up_history(t_termcap *t)
 {
 	if (t->pos_hist == 0)
@@ -74,6 +96,7 @@ int		up_history(t_termcap *t)
 		t->input_tmp = ft_strdup("");
 	if (t->pos_hist == 0 && t->input_tmp == NULL)
 		return (error_msg(2, ' '));
+	delete_line_history(t);
 	tputs(t->del_line, 0, &ft_putchar);
 	if (t->pos_hist != t->tot_hist)
 		t->pos_hist++;
@@ -83,6 +106,7 @@ int		up_history(t_termcap *t)
 
 int		down_history(t_termcap *t)
 {
+	delete_line_history(t);
 	tputs(t->del_line, 0, &ft_putchar);
 	if (t->pos_hist > 0)
 		t->pos_hist--;

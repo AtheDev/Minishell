@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 22:00:04 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/01 20:57:30 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/02 12:25:41 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ int		key_delete(t_termcap *t, int size)
 	if (t->size_prompt < t->pos_cursor)
 	{
 		size = ft_strlen(t->input) - 1;
-		if (((int)ft_strlen(t->input) + t->size_prompt > t->rows_window)
+		if (((int)ft_strlen(t->input) + t->size_prompt >= t->cols_window)
 		&& (t->cols_cursor == 1))
 		{
 			tputs(tgoto(t->move_cursor, t->cols_window,
-					t->rows_cursor - 2), 1, &ft_putchar);
+					t->rows_cursor - 2), 0, &ft_putchar);
 			tputs(t->del_char, 0, &ft_putchar);
 			t->input = delete_char(t->input, &size);
 			t->pos_cursor--;
@@ -51,7 +51,7 @@ int		check_char(char *buff, t_termcap *t)
 		return (-2);
 	else if (buff[0] == '\x1b' && buff[1] == '[' && buff[2] == 'A')
 	{
-		if (t->history != NULL)
+		if (t->history != NULL && t->pos_hist < t->tot_hist)
 			return (up_history(t));
 		return (2);
 	}
@@ -67,7 +67,10 @@ int		check_char(char *buff, t_termcap *t)
 	buff[2] == 'D')) || buff[0] == 27 || ft_isprint(buff[0]) == 0)
 		return (2);
 	t->pos_cursor++;
-	return (write(1, &buff[0], 1));
+	write(1, &buff[0], 1);
+	if ((t->pos_cursor % t->cols_window) == 0)
+		write(1, "\r\n", 2);
+	return (1);
 }
 
 void	reset_after_g_sig(t_termcap *t, t_env *env)
