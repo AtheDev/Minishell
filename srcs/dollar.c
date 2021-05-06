@@ -6,13 +6,13 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 09:56:23 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/29 14:07:40 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/06 13:47:58 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	check_dollar(char **line, int index, int *i, t_env *env)
+/*int	check_dollar(char **line, int index, int *i, t_env *env)
 {
 	int	size_tot;
 
@@ -31,7 +31,7 @@ int	check_dollar(char **line, int index, int *i, t_env *env)
 	}
 	*i += 1;
 	return (1);
-}
+}*/
 
 int	var_is_digit_or_interrogation_point
 	(char **line, int *i, char *tmp, t_env *env)
@@ -79,12 +79,17 @@ int	variable_not_found(char **line, char *tmp, int pos_dollar, int size_var)
 	char	*tmp2;
 
 	tmp2 = NULL;
+	if (tmp != NULL)
+		tmp = ft_free(tmp);
 	tmp = ft_substr(*line, 0, pos_dollar);
 	tmp2 = ft_substr(*line, pos_dollar + size_var + 1, ft_strlen(*line)
 	- (pos_dollar + size_var + 1));
 	if (tmp != NULL && tmp2 != NULL)
 	{
+		if (*line != NULL)
+			*line = ft_free(*line);
 		*line = ft_strjoin(tmp, tmp2);
+		process_free(tmp, tmp2);
 		if (*line != NULL)
 			return (0);
 	}
@@ -120,7 +125,7 @@ int	recover_variable(char **line, int *i, int *size_var, int *index, t_env *env)
 	return (ret);
 }
 
-int	replace_variable(char **line, int *i, t_env *env)
+int	replace_variable(char **line, int *i, t_env *env, int quote)
 {
 	char	*tmp;
 	int		index;
@@ -143,5 +148,10 @@ int	replace_variable(char **line, int *i, t_env *env)
 		return (error_msg(2, ' '));
 	else
 		*i = --(*i) + index - size_var - 2;
+	if ((*line)[0] == '"' && quote == 1)
+	{
+		*line = ft_free(*line);
+		return (2);
+	}
 	return (0);
 }

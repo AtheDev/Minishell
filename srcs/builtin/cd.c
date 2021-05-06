@@ -5,121 +5,178 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/19 10:48:10 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/19 17:32:20 by adupuy           ###   ########.fr       */
+/*   Created: 2021/05/04 14:57:47 by adupuy            #+#    #+#             */
+/*   Updated: 2021/05/05 16:51:14 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-#include "minishell.h"
+void	error_getcwd(void)
+{
+	ft_putstr_fd("minishell: cd : error determining the current directory:", 2);
+	ft_putstr_fd(" getcwd: cannot access parent directories: ", 2);
+	ft_putstr_fd("No file or folder of this type\n", 2);
+}
 
-int	process_cd(t_env **env, char *var_env, int num)
+int	update_var_env(t_env **env, t_termcap *t)
 {
 	char	*pwd;
 	char	*oldpwd;
-	char	*var;
-	char	*path;
+	char	*tmp;
 
-	if (num == 0)
+	pwd = get_value_var_env(get_var_env(env, "PWD"));
+	if (pwd != NULL)
 	{
-		var = get_var_env(env, var_env);
-		pwd = get_var_env(env, "PWD");
-		if (ft_strncmp(var_env, "OLDPWD", 6) == 0)
+		if ((tmp = ft_strjoin("PWD=", t->save_pwd)) != NULL)
 		{
-			if (pwd == NULL && (var == NULL || var[ft_strlen(var_env) + 1] == '\0'))
+			if ((process_add_var_env(tmp, env)) == -1)
 			{
-				error_msg_with_string(2, var_env);
-				if (process_delete_var_env(var_env, env) != 0)
-					return (error_msg(2, ' '));
-				return (0);
-			}
-		}
-		if (var == NULL)
-			return (error_msg_with_string(2, var_env));
-		if (var[ft_strlen(var_env) + 1] == '\0')
-		{
-			printf("Pas d'erreur => change le prompt \'~\' en \'/home/user42\'\n");
-			return (0);
-		}
-		path = get_value_var_env(var);
-	}
-	else
-		path = var_env;
-	if (chdir(path) == 0)
-	{
-		pwd = get_value_var_env(get_var_env(env, "PWD"));
-		oldpwd = get_value_var_env(get_var_env(env, "OLDPWD"));
-		if (pwd == NULL)
-		{
-			if (oldpwd != NULL)
-			{
-				if (process_add_var_env(ft_strjoin("OLDPWD=", ""), env) == -1)
-					return (error_msg(2, ' '));
-			}
-		}
-		if (pwd != NULL && oldpwd != NULL)
-		{
-			if (pwd[0] == '\0')
-				process_add_var_env(ft_strjoin("OLDPWD=", ""), env);
-			else
-		/*	if (*/process_add_var_env(ft_strjoin("OLDPWD=", pwd), env);
-		/*	{
-				process_free(pwd, oldpwd);
+				tmp = ft_free(tmp);
 				return (error_msg(2, ' '));
-			}*/
-		}
-	//	process_free(pwd, oldpwd);
-		if (pwd != NULL)
-		{
-			pwd = getcwd(NULL, 0);
-			if (pwd == NULL)
-			{
-				printf("Erreur lors de la récupération de PWD\n");
-				return (1);
 			}
-			if (process_add_var_env(ft_strjoin("PWD=", pwd), env) == -1)
-				return (error_msg(2, ' '));
-			free(pwd);
+			tmp = ft_free(tmp);
 		}
-		if (ft_strncmp(var_env, "OLDPWD", 6) == 0)
-			printf("%s\n", getcwd(NULL, 0));
+		else
+			return (error_msg(2, ' '));
 	}
-	else
+	oldpwd = get_value_var_env(get_var_env(env, "OLDPWD"));
+	if (oldpwd != NULL)
 	{
-		printf("Erreur CHDIR\n");
-		return (1);
-	//	return (error_msg_with_string(1, var_env));
+		if ((tmp = ft_strjoin("OLDPWD=", t->save_oldpwd)) != NULL)
+		{
+			if ((process_add_var_env(tmp, env)) == -1)
+			{
+				tmp = ft_free(tmp);
+				return (error_msg(2, ' '));
+			}
+			tmp = ft_free(tmp);
+		}
+		else
+			return (error_msg(2, ' '));
 	}
 	return (0);
 }
 
-int	ft_cd(char **arg, t_env **env)
+int	swap_pwd_oldpwd(t_termcap * t, char *tmp)
+{
+	t->save_oldpwd = ft_free(t->save_oldpwd);
+	t->save_oldpwd = ft_strdup(t->save_pwd);
+	t->save_pwd = ft_free(t->save_pwd);
+	t->save_pwd = ft_strdup(tmp);
+	tmp = ft_free(tmp);
+	if (t->save_oldpwd == NULL || t->save_pwd == NULL)
+		return (error_msg(2, ' '));
+	return (0);
+}
+
+char	*new_pwd(t_termcap *t, char *path)
+{
+	char	*tmp;
+	int	size;
+
+	tmp = NULL;
+	size = ft_strlen(path) + ft_strlen(t->save_pwd) + 2;
+	tmp = malloc(sizeof(char) * (size));
+	if (tmp != NULL)
+	{
+		ft_bzero(tmp, size);
+		ft_strcpy(tmp, t->save_pwd);
+		ft_strncat(tmp, "/", 1);
+		ft_strncat(tmp, path, ft_strlen(path));
+		return (tmp);
+	}
+	error_msg(2, ' ');
+	return (NULL);
+}
+
+int	process_cd(char *path, t_termcap *t, t_env **env)
+{
+	char	*tmp;
+
+	if (chdir(path) == 0)
+	{
+		if ((tmp = getcwd(NULL, 0)) == NULL)
+		{
+			error_getcwd();
+			if ((tmp = new_pwd(t, path)) == NULL)
+				return (1);
+		}
+		if ((swap_pwd_oldpwd(t, tmp)) != 0)
+		{
+			if (tmp != NULL)
+				tmp = ft_free(tmp);
+			return (1);
+		}
+		if (update_var_env(env, t) != 0)
+			return (1);
+	}
+	else
+		return (error_msg_with_string(1, path));
+	return (0);
+}
+
+int	process_cd_home(t_env **env, t_termcap *t)
+{
+	char	*home;
+
+	home = get_value_var_env(get_var_env(env, "HOME"));
+	if (home == NULL)
+		return (error_msg_with_string(2, "HOME"));
+	if (home[0] == '\0')
+	{
+		return (0);
+		//update_var_env(env, t);
+		// Rien à l'affichage
+		// MAJ de PWD et OLDPWD
+		// if unset PWD export HOME= et cd
+		//	MAJ qui supprime OLDPWD
+		// if unset OLDPWD export HOME= et cd
+		//	RIEN (PWD existe tjr)
+		// if unset PWD OLDPWD export HOME= et cd
+		//	RIEN (PWD et OLDPWD n'existe plus)
+	}
+	else
+		return (process_cd(home, t, env));
+}
+
+int	process_cd_oldpwd(t_env **env, t_termcap *t)
+{
+	char	*oldpwd;
+	char	*tmp;
+
+	tmp = NULL;
+	oldpwd = get_value_var_env(get_var_env(env, "OLDPWD"));
+	if (oldpwd == NULL)
+		return (error_msg_with_string(2, "OLDPWD"));
+	if (oldpwd[0] == '\0')
+	{
+		printf("\n");
+		return (0);
+		// écrit une ligne vide
+		// remplit OLDPWD avec PWD
+		//	si PWD == '\0' => OLDPWD = '\0' et PWD = getcwd
+		//	si PWD == NULL => OLDPWD = '\0' et pas de PWD
+	}
+	else
+	{
+		process_cd(oldpwd, t, env);
+		tmp = getcwd(NULL, 0);
+		printf("%s\n", tmp);
+		tmp = ft_free(tmp);
+		return (0);
+	}
+}
+
+int	ft_cd(char **arg, t_env **env, t_termcap *t)
 {
 	if (check_nb_arg(arg, 0) > 2)
 		return (error_msg(4, ' '));
-	if (arg[1] != NULL)
-	{
-		if (arg[1][0] == '\0')
-			return (0);
-		if (ft_strncmp(arg[1], "-", 2) == 0)
-		{
-			if (process_cd(env, "OLDPWD", 0) == 1)
-				return (1);
-			return (0);
-		}
-	}
-	if (arg[1] == NULL || (arg[1] != NULL && ft_strncmp(arg[1], "--", 3) == 0))
-	{
-		if (process_cd(env, "HOME", 0) == 1)
-			return (1);
-		return (0);
-	}
-	else
-	{
-		if (process_cd(env, arg[1], 1) == 1)
-			return (error_msg_with_string(1, arg[1]));
-	}
+	if (arg[1] == NULL || ft_strncmp(arg[1], "~", 2) == 0)
+		return (process_cd_home(env, t));
+	else if (ft_strncmp(arg[1], "-", 2) == 0)
+		return (process_cd_oldpwd(env, t));
+	else if (arg[1][0] != '\0')
+		return (process_cd(arg[1], t, env));
 	return (0);
 }
-

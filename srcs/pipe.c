@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 16:50:11 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/30 13:58:37 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/04/30 14:23:22 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ void	cancel_redirect(t_list_cmd *cmd, t_env *env, int fork)
 	cmd->fd[1] = 0;
 	dup2(env->fd[0], 0);
 	dup2(env->fd[1], 1);
-
 	i = -1;
 	if (fork == 0)
 	{

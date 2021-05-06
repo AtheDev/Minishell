@@ -1,33 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   ft_strcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/28 10:59:21 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/01 20:58:51 by adupuy           ###   ########.fr       */
+/*   Created: 2021/05/04 14:37:29 by adupuy            #+#    #+#             */
+/*   Updated: 2021/05/04 14:37:53 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void	handler_sigint(int num)
+char	*ft_strcpy(char *dest, char *src)
 {
-	(void)num;
-	if (g_sig != 0 && g_sig != 1)
-		ft_putstr_fd("\n", 1);
-	else
+	int i;
+
+	i = 0;
+	while (src[i] != '\0')
 	{
-		ft_putstr_fd("^C\n", 1);
-		prompt(NULL);
-		g_sig = 1;
+		dest[i] = src[i];
+		i++;
 	}
-}
-
-void	handler_sigquit(int num)
-{
-	(void)num;
-	if (g_sig != 0)
-		ft_putstr_fd("Quit (core dumped)\n", 2);
+	dest[i] = src[i];
+	return (dest);
 }

@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 11:36:44 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/01 14:49:32 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/06 19:50:38 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	exec_sh(t_list_cmd *cmd, t_env *env, t_termcap *t)
 	return (0);
 }
 
-int	exec_pipe_cmd_next(t_list_cmd *cmd, t_env *env, t_termcap *t)
+int	exec_pipe_cmd_next(t_list_cmd *cmd, t_env *env, t_termcap *t, t_list_cmd **tmp)
 {
 	int	ret;
 
@@ -58,18 +58,18 @@ int	exec_pipe_cmd_next(t_list_cmd *cmd, t_env *env, t_termcap *t)
 	if (ret == -1 || ret == 1)
 		return (ret);		// A revoir pour mettre exit();
 	redirect(cmd->fd[0], cmd->fd[1]);
-	if (is_builtin(env, &cmd, 1, t) == 1)
+	if (is_builtin(env, &cmd, 1, t, tmp) == 1)
 		env->return_value = exec_sh(cmd, env, t);
 	return (env->return_value);
 }
 
-void	exec_pipe_cmd(t_list_cmd **cmd, t_env *env, int nb_cmd, t_termcap *t)
+void	exec_pipe_cmd(t_list_cmd **cmd, t_env *env, int nb_cmd, t_termcap *t, t_list_cmd **tmp)
 {
 	pid_t	pid;
 
 	while (nb_cmd > 0)
 	{
-		if (dvlpmt_arg((*cmd)->arg_cmd, env) == -1)
+		if (dvlpmt_arg((*cmd)->arg_cmd, env, cmd) == -1)
 			return ;
 		if (nb_cmd - 1 != 0)
 			create_pipe(*cmd, (*cmd)->next_cmd);
@@ -77,7 +77,7 @@ void	exec_pipe_cmd(t_list_cmd **cmd, t_env *env, int nb_cmd, t_termcap *t)
 		if ((pid = fork()) == -1)
 			strerror(errno);
 		else if (pid == 0)
-			exec_pipe_cmd_next(*cmd, env, t);
+			exec_pipe_cmd_next(*cmd, env, t, tmp);
 		else
 		{
 			cancel_redirect(*cmd, env, 1);
@@ -87,7 +87,7 @@ void	exec_pipe_cmd(t_list_cmd **cmd, t_env *env, int nb_cmd, t_termcap *t)
 		}
 	}
 	g_sig = 2;
-//	return_wait(env, -1);
+	//return_wait(env, -1);
 	
 }
 
@@ -111,11 +111,13 @@ void	exec_one_cmd(t_list_cmd **cmd, t_env *env, t_termcap *t)
 }
 
 int	process_shell(t_env *env, t_list_cmd **cmd, t_list **cmd_tmp, t_termcap *t)
-{(void)t;
+{
 	t_list_cmd	*tmp;
 	int	nb_cmd;
-clear_cmd_tmp(*cmd_tmp);
-*cmd_tmp = NULL;
+
+	clear_cmd_tmp(*cmd_tmp);
+	cmd_tmp = NULL;
+
 	tmp = *cmd;
 	nb_cmd = 0;
 	while (*cmd != NULL)
@@ -123,17 +125,20 @@ clear_cmd_tmp(*cmd_tmp);
 		if ((*cmd)->pipe == 1)
 		{
 			nb_cmd = count_pipes(cmd);
-			exec_pipe_cmd(cmd, env, nb_cmd, t);
+			exec_pipe_cmd(cmd, env, nb_cmd, t, &tmp);
 		}
 		else
 		{
-			if (dvlpmt_arg((*cmd)->arg_cmd, env) == -1)
+			if (dvlpmt_arg((*cmd)->arg_cmd, env, cmd) == -1)
 				return (-1);
 			if ((*cmd)->nb_redir != 0)
 				process_redir_cmd(cmd, (*cmd)->nb_redir);
 			redirect((*cmd)->fd[0], (*cmd)->fd[1]);
-			if (is_builtin(env, cmd, 0, t) == 1)
-				exec_one_cmd(cmd, env, t);
+			if ((*cmd)->arg_cmd[0] != NULL)
+			{
+				if (is_builtin(env, cmd, 0, t, &tmp) == 1)
+					exec_one_cmd(cmd, env, t);
+			}
 			if ((*cmd)->nb_redir != 0)
 				cancel_redirect(*cmd, env, 0);
 			*cmd = (*cmd)->next_cmd;

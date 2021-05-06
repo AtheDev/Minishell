@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 19:09:43 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 16:21:16 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/03 16:40:28 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	init_term(t_env *env)
 
 	term_type = get_value_var_env(get_var_env(&env, "TERM="));
 	if (term_type == NULL)
-		return (-1);
+		term_type = "xterm";
 	ret = tgetent(NULL, term_type);
 	if (ret == -1)
 		return (error_term(1, ""));

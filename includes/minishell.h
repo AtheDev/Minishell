@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/01 12:59:24 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/06 18:59:45 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	g_sig;
 typedef struct	s_env
 {
 	char	**var_env;
-	char	*tilde;
+//	char	*tilde;
 	int	return_value;
 	int	exit;
 	size_t	size;
@@ -52,6 +52,7 @@ typedef struct	s_list_cmd
 {
 	char	*cmd;
 	char	**arg_cmd;
+	int	nb_arg;
 	int	semicolon;
 	int	pipe;
 	int	nb_redir;
@@ -64,12 +65,19 @@ typedef struct	s_list_cmd
 typedef struct	s_termcap
 {
 	t_list	*history;
+	t_list_cmd	*save_first_cmd;
+	char	*save_prompt;
+	char	*save_pwd;
+	char	*save_oldpwd;
+	char	*save_home;
 	int	pos_hist;
 	int	tot_hist;
 	int	rows_cursor;
 	int	cols_cursor;
 	int	rows_window;
 	int	cols_window;
+	int	rows_prompt;
+	int	cols_prompt;
 	int	pos_cursor;
 	int	tot_cursor;
 	int	size_prompt;
@@ -89,7 +97,7 @@ void	clear_env(t_env *env);
 t_env	copy_env(char **env, int init, size_t i);
 char	*inc_shlvl(char *str);
 void	add_elt_env(t_env *env);
-void	clear_env(t_env *env);
+t_env	init_env_null(void);
 
 /*
 	***** GET ENV *****
@@ -148,8 +156,8 @@ int	redir(char *str, int i);
 /*
 	***** DOLLAR *****
 */
-int	replace_variable(char **line, int *i, t_env *env);
-int	check_dollar(char **line, int index, int *i, t_env *env);
+int	replace_variable(char **line, int *i, t_env *env, int quote);
+//int	check_dollar(char **line, int index, int *i, t_env *env);
 int	recover_variable(char **line, int *i, int *size_var, int *index, t_env *env);
 int	variable_not_found(char **line, char *tmp, int pos_dollar, int size_var);
 int	var_is_digit_or_interrogation_point(char **line, int *i, char *tmp, t_env *env);
@@ -166,7 +174,6 @@ int	check_variable(char *line, int *i, int quote);
 /*
 	***** WORD *****
 */
-int	check_word(char *line, int i, int quote);
 int	delete_space(char **cmd, int i);
 
 /*
@@ -198,7 +205,7 @@ int		moving_forward(char *str, int i);
 /*
 	***** PROCESS SHELL *****
 */
-int	process_shell(t_env *env, t_list_cmd **cmd);
+int	process_shell(t_env *env, t_list_cmd **cmd, t_list **cmd_tmp, t_termcap *t);
 
 /*
 	*******************
@@ -208,18 +215,18 @@ int	process_shell(t_env *env, t_list_cmd **cmd);
 /*
 	--> built.c
 */
-int	is_builtin(t_env *env, t_list_cmd **cmd, int fork);
+int	is_builtin(t_env *env, t_list_cmd **cmd, int fork, t_termcap *t, t_list_cmd **tmp);
 
 /*
 	--> pwd.c
 */
-int	ft_pwd(char **arg, t_env *env);
+int	ft_pwd(char **arg, t_env *env, t_termcap *t);
 
 /*
 	--> echo.c
 */
 int	chech_option_echo(char *str, int i);
-int	ft_echo(char **arg, int i, int n);
+int	ft_echo(char **arg, int i, int n, int nb_arg);
 
 /*
 	--> exit.c
@@ -248,7 +255,8 @@ int	check_arg_var(char **arg, int cmd/*, t_env **env*/);
 /*
 	--> cd.c
 */
-int	ft_cd(char **arg, t_env **env);
+int	ft_cd(char **arg, t_env **env, t_termcap *t);
+int	ft_cd2(char **arg, t_env **env, t_termcap *t);
 
 /*
 	--> add_or_delete_var_env.c
@@ -266,10 +274,10 @@ int	check_nb_arg(char **arg, int count);
 /*
 	***** EDIT ARG *****
 */
-int		dvlpmt_arg(char **arg, t_env *env);
-char	*edit_arg(char *str, t_env *env);
+int		dvlpmt_arg(char **arg, t_env *env, t_list_cmd **cmd);
+char	*edit_arg(char *str, t_env *env, int *ret);
 char	*edit_arg_other(char *str, int *i, t_env *env);
-char	*edit_arg_db_quotes(char *str, int *i, t_env *env);
+char	*edit_arg_db_quotes(char *str, int *i, t_env *env, int *ret);
 
 /*
 	***** UTILS *****
@@ -293,7 +301,7 @@ void	cancel_redirect(t_list_cmd *cmd, t_env *env, int fork);
 */
 int	process_redir_cmd(t_list_cmd **cmd, int nb_redir);
 int	open_file(t_list_cmd **cmd, int i, int *index);
-char	**delete_redir_and_file(char **cmd, int nb);
+char	**delete_redir_and_file(char **cmd, int nb, int nb2);
 int	close_redir(t_list_cmd **cmd);
 
 /*
@@ -343,8 +351,8 @@ void	init_read(t_termcap *t);
 /*
 	***** READ *****
 */
-int	process_read(t_termcap *termcap, int ret, int new_line);
-int	loop_read(t_termcap *t);
+int	process_read(t_termcap *termcap, int ret, int new_line, t_env *env);
+int	loop_read(t_termcap *t, t_env *env);
 
 /*
 	***** TERMCAP *****

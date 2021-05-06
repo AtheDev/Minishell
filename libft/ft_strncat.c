@@ -1,33 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   ft_strncat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/04/28 10:59:21 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/01 20:58:51 by adupuy           ###   ########.fr       */
+/*   Created: 2021/05/05 16:16:29 by adupuy            #+#    #+#             */
+/*   Updated: 2021/05/05 16:16:44 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-void	handler_sigint(int num)
+char	*ft_strncat(char *dest, char *src, unsigned int nb)
 {
-	(void)num;
-	if (g_sig != 0 && g_sig != 1)
-		ft_putstr_fd("\n", 1);
-	else
+	int				i;
+	unsigned int	j;
+
+	i = 0;
+	while (dest[i] != '\0')
 	{
-		ft_putstr_fd("^C\n", 1);
-		prompt(NULL);
-		g_sig = 1;
+		i++;
 	}
-}
-
-void	handler_sigquit(int num)
-{
-	(void)num;
-	if (g_sig != 0)
-		ft_putstr_fd("Quit (core dumped)\n", 2);
+	j = 0;
+	while (src[j] != '\0' && nb)
+	{
+		dest[i] = src[j];
+		i++;
+		j++;
+		nb--;
+	}
+	dest[i] = '\0';
+	return (dest);
 }

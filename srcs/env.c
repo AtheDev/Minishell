@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:06:13 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/30 14:17:46 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/03 11:37:00 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	add_elt_env(t_env *env)
 {
 	env->exit = 0;
 	env->return_value = 0;
-	env->tilde = get_value_var_env(get_var_env(&env, "HOME"));
+//	env->tilde = get_value_var_env(get_var_env(&env, "HOME"));
 	env->fd[0] = dup(0);
 	env->fd[1] = dup(1);
 }
@@ -76,6 +76,26 @@ t_env	copy_env(char **envp, int init, size_t i)
 		}
 	}
 	env.var_env[i] = NULL;
+	add_elt_env(&env);
+	return (env);
+}
+
+t_env	init_env_null(void)
+{
+	t_env	env;
+
+	env.var_env = malloc(sizeof(char *) * 2);
+	if (env.var_env == NULL)
+		return (env);
+	env.var_env[0] = ft_strdup("SHLVL=1");
+	if (env.var_env[0] == NULL)
+	{
+		error_msg(2, ' ');
+		clear_env(&env);
+		return (env);
+	}
+	env.var_env[1] = NULL;
+	env.size = 2;
 	add_elt_env(&env);
 	return (env);
 }

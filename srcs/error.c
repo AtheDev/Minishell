@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 22:15:53 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/01 12:44:38 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/03 19:40:51 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ int	error_msg(int num, char c)
 		ft_putstr_fd("minishell: multiline is not accepted\n", 2);
 	if (num == 4)
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
+	if (num == 6)
+		ft_putstr_fd("minishell: no argument needed\n", 2);
 	return (1);
 }
 

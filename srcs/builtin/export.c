@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 13:45:29 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/29 23:20:39 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/06 19:18:38 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@ int	swap_env(t_env *cp_env, int *i, char *tmp)
 	ft_strlen(cp_env->var_env[*i])) < 0)
 	{
 		if ((tmp = ft_strdup(cp_env->var_env[*i])) == NULL)
+		{
+			free_tab_string(cp_env->var_env);
 			return (-1);
+		}
 		free(cp_env->var_env[*i]);
 		if ((cp_env->var_env[*i] = ft_strdup(cp_env->var_env[*i + 1])) == NULL)
 		{
@@ -37,6 +40,7 @@ int	swap_env(t_env *cp_env, int *i, char *tmp)
 	}
 	else
 		(*i)++;
+	tmp = ft_free(tmp);
 	return (0);
 }
 
@@ -59,13 +63,13 @@ int	sort_env(t_env **env, int i)
 		{
 			if ((tmp = get_key_var_env(cp_env.var_env[i])) == NULL)
 				return (error_msg(2, ' '));
-			printf("declare -x %s=\"%s\"\n",
-			get_key_var_env(cp_env.var_env[i]),
+			printf("declare -x %s=\"%s\"\n", tmp,
 			get_value_var_env(get_var_env(env, cp_env.var_env[i])));
 			free(tmp);
 		}
 		i++;
 	}
+	clear_env(&cp_env);
 	return (0);
 }
 

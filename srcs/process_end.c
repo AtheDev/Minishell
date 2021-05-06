@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:16:56 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 16:46:43 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/06 18:28:39 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,25 @@ void	clear_cmd(t_list_cmd *cmd)
 	{
 		tmp = cmd->next_cmd;
 		i = 0;
-		while (cmd->arg_cmd[i] != NULL)
+		if (cmd->nb_arg != -1)
 		{
-			free(cmd->arg_cmd[i]);
-			i++;
+			while (i < cmd->nb_arg)
+			{
+				if (cmd->arg_cmd[i] != NULL)
+					free(cmd->arg_cmd[i]);
+				i++;
+			}
+		}
+		else
+		{
+			while (cmd->arg_cmd[i] != NULL)
+			{
+				free(cmd->arg_cmd[i]);
+				i++;
+			}
 		}
 		free(cmd->arg_cmd);
+		cmd->arg_cmd = NULL;
 		if (cmd->fd_redir != NULL)
 			free(cmd->fd_redir);
 		free(cmd);
@@ -55,6 +68,10 @@ void	clear_termcap(t_termcap *t)
 		clear_cmd_tmp(t->history);
 		t->history = NULL;
 	}
+	t->save_prompt = ft_free(t->save_prompt);
+	t->save_oldpwd = ft_free(t->save_oldpwd);
+	t->save_pwd = ft_free(t->save_pwd);
+	t->save_home = ft_free(t->save_home);
 }
 
 int		process_end_ko(t_env *env, t_termcap *t, t_list *cmd_tmp, t_list_cmd *cmd)

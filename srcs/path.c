@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 17:20:22 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/01 12:58:46 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/03 11:03:45 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,13 @@ int	search_in_var_env_path(t_env **env, char **arg)
 	int	i;
 	char	*tmp;
 
-	if ((path = ft_split(get_value_var_env(get_var_env(env, "PATH")), ':')) == NULL)
+	if ((tmp = get_value_var_env(get_var_env(env, "PATH"))) == NULL)
 	{
 		error_msg_with_string(9, arg[0]);
-		return (-1);
+		return (2);
 	}
+	if ((path = ft_split(tmp, ':')) == NULL)
+		return (error_msg(2, ' '));
 	i = -1;
 	tmp = NULL;
 	while (path[++i] != NULL)
@@ -96,9 +98,10 @@ int	search_path(char **arg, t_env **env, int ret)
 	if (ft_strchr(*arg, '/') == NULL)
 	{
 		ret = search_in_var_env_path(env, arg);
-		if (ret == 1)
+		if (ret == 1 || ret == 2)
 		{
-			error_stat_and_path(3, *arg);
+			if (ret == 1)
+				error_stat_and_path(3, *arg);
 			(*env)->return_value = 127;
 			return (1);
 		}

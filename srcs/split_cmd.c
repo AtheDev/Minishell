@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 10:08:32 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/28 20:16:26 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/06 19:32:16 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		moving_forward(char *str, int i)
 	{
 		i++;
 		while ((str[i] != ' ' || (str[i] == ' ' && is_escaped(str, i - 1) == 1))
-		&& (db_quotes(str, i) == 0) && (sp_quote(str, i) == 0) && str[i])
+		&& (db_quotes(str, i) == 1) && (sp_quote(str, i) == 1) && str[i])
 			i++;
 		i--;
 	}
@@ -85,9 +85,12 @@ char	*new_str(char *str, int i, int size)
 	tmp = malloc(sizeof(char) * (size + 1));
 	if (tmp == NULL)
 		return (NULL);
-	count = 0;
-	while (count < size)
-		tmp[count++] = str[i++];
+	count = -1;
+	while (++count < size)
+	{
+		tmp[count] = str[i];
+		i++;
+	}
 	tmp[count] = '\0';
 	return (tmp);
 }

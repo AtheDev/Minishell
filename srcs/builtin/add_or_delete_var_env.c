@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 11:03:35 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/27 16:26:38 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/03 16:41:08 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int		process_add_var_env(char *arg, t_env **env)
 		{
 			free((*env)->var_env[i]);
 			(*env)->var_env[i] = ft_strdup(arg);
-			process_free(arg, key);
+			key = ft_free(key);
 			if ((*env)->var_env[i] == NULL)
 				return (-1);
 			return (0);

@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:03:14 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/01 21:12:33 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/06 18:41:21 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ int	loop_read_and_parsing(t_env *env, t_termcap *t, t_list **cmd_tmp, t_list_cmd
 
 	init(cmd_tmp, cmd, t);
 	ret = loop_read(t, env);
+//	prompt(t);
+//	ret = get_next_line(0, &t->line);
 	if (ret == -1)
 		return (process_end_ko(env, t, *cmd_tmp, *cmd));
 	else if (ret == -2)
@@ -58,7 +60,9 @@ int	main(int argc, char **argv, char **envp)
 	t_termcap	termcap;
 	int	ret;
 
-	void_arg_main(argc, argv);
+	if (argc != 1)
+		return (error_msg(6, ' '));
+	void_arg_main(argc, argv);	
 	init(&cmd_tmp, &cmd, &termcap);
 	if (init2(&env, envp, &termcap) == 1)
 		return (process_end_ko(&env, &termcap, cmd_tmp, cmd));
@@ -71,7 +75,7 @@ int	main(int argc, char **argv, char **envp)
 			return (process_end_ko(&env, &termcap, cmd_tmp, cmd));
 		else if (ret == 0)
 			process_shell(&env, &cmd, &cmd_tmp, &termcap);
-		clear_last_struct(&env, &termcap, cmd_tmp, cmd);
+		clear_last_struct(&env, &termcap, NULL/*cmd_tmp*/, cmd);
 	}
 	return (env.return_value);
 }

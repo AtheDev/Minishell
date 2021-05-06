@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 22:00:04 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/02 12:25:41 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/05 17:19:28 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ int		check_char(char *buff, t_termcap *t)
 		return (2);
 	t->pos_cursor++;
 	write(1, &buff[0], 1);
-	if ((t->pos_cursor % t->cols_window) == 0)
-		write(1, "\r\n", 2);
+//	if ((t->pos_cursor % t->cols_window) == 0)
+//		write(1, "\r\n", 2);
 	return (1);
 }
 
