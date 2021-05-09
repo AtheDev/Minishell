@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:26:08 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/06 10:00:35 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/08 17:02:23 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int	analysis_sep(char **line, int *i, int *start_cmd, t_list **cmd)
 {
 	if (before_char(*line, *i, (*line)[*i]) == 1)
 		return (1);
+	if ((*line)[*i] == '|' && empty_line(line, *i + 1) == 1)
+		return (error_msg(3, ' '));
 	if ((*line)[*i] == ';' || (*line)[*i] == '|')
 	{
 		*line = add_char(*line, i, (*line)[*i], 1);

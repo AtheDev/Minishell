@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:32:58 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/06 09:49:10 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/07 18:54:01 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	*clean_line(char *str)
 	i = ft_strlen(str);
 	if (ft_isspace(str[i - 1]) == 1)
 	{
-		while (ft_isspace(str[i - 1]) == 1)
+		while (ft_isspace(str[i - 1]) == 1 && is_escaped(str, i - 2) == 0)
 			i--;
 	}
 	tmp = my_substr(str, 0, i, -1);

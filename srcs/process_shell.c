@@ -6,23 +6,78 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 11:36:44 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/06 19:50:38 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/09 19:52:42 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	return_wait(t_env *env, int cpid)
+int	search_last_return_value(int nb_cmd, int tab_pid[nb_cmd][2])
 {
-	int	status = 0;
+	int	i;
+	int	pid;
+	int	ret;
 
-	do {
-		waitpid(cpid, &status, WUNTRACED | WCONTINUED);
+	i = -1;
+	ret = 0;
+	pid = 0;
+	while(++i < nb_cmd)
+	{
+		if (pid < tab_pid[i][0])
+		{
+			pid = tab_pid[i][0];
+			ret = tab_pid[i][1];
+		}
+	}
+	return (ret);
+}
+
+void	wait_with_pipe(t_env *env, int nb_cmd)
+{
+	int	status;
+	int	tab_pid[nb_cmd][2];
+	int	i;
+	int	pid;
+
+	i = 0;
+	pid = 0;
+	while (pid >= 0)
+	{
+		pid = waitpid(-1, &status, 0);
+		tab_pid[i][0] = pid;
 		if (WIFEXITED(status))
 			env->return_value = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
 			env->return_value = WTERMSIG(status) + 128;
-	} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+		tab_pid[i][1] = env->return_value;
+		i++;
+	}
+	env->return_value = search_last_return_value(nb_cmd, tab_pid);
+	g_sig = 0;
+}
+
+void	return_wait(t_env *env, int pid/*, int num*/)
+{
+	int	status;
+
+/*	if (num == 1)
+		while (wait(&status) > 0);
+	else if (num == 0)*/
+//	{
+		do {
+			waitpid(pid, &status, /*WUNTRACED | WCONTINUED*/0);
+			if (WIFEXITED(status))
+				env->return_value = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				env->return_value = WTERMSIG(status) + 128;
+		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+//	}
+//	else
+//		while (wait(&status) > 0);
+/*	if (WIFEXITED(status))
+		env->return_value = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		env->return_value = WTERMSIG(status) + 128;*/
 	g_sig = 0;
 }
 
@@ -66,10 +121,12 @@ int	exec_pipe_cmd_next(t_list_cmd *cmd, t_env *env, t_termcap *t, t_list_cmd **t
 void	exec_pipe_cmd(t_list_cmd **cmd, t_env *env, int nb_cmd, t_termcap *t, t_list_cmd **tmp)
 {
 	pid_t	pid;
+	int	save_nb_cmd;
 
+	save_nb_cmd = nb_cmd;
 	while (nb_cmd > 0)
 	{
-		if (dvlpmt_arg((*cmd)->arg_cmd, env, cmd) == -1)
+		if (((*cmd)->arg_cmd = dvlpmt_arg((*cmd)->arg_cmd, env/*, cmd*/)) == NULL)
 			return ;
 		if (nb_cmd - 1 != 0)
 			create_pipe(*cmd, (*cmd)->next_cmd);
@@ -81,14 +138,13 @@ void	exec_pipe_cmd(t_list_cmd **cmd, t_env *env, int nb_cmd, t_termcap *t, t_lis
 		else
 		{
 			cancel_redirect(*cmd, env, 1);
-			return_wait(env, pid);
 			*cmd = (*cmd)->next_cmd;
 			nb_cmd--;
 		}
 	}
-	g_sig = 2;
-	//return_wait(env, -1);
-	
+	g_sig = 3;
+//	return_wait(env, -1, 1);
+	wait_with_pipe(env, save_nb_cmd);
 }
 
 void	exec_one_cmd(t_list_cmd **cmd, t_env *env, t_termcap *t)
@@ -129,8 +185,9 @@ int	process_shell(t_env *env, t_list_cmd **cmd, t_list **cmd_tmp, t_termcap *t)
 		}
 		else
 		{
-			if (dvlpmt_arg((*cmd)->arg_cmd, env, cmd) == -1)
+			if (((*cmd)->arg_cmd = dvlpmt_arg((*cmd)->arg_cmd, env/*, cmd*/)) == NULL)
 				return (-1);
+//print_struct_complete(cmd);
 			if ((*cmd)->nb_redir != 0)
 				process_redir_cmd(cmd, (*cmd)->nb_redir);
 			redirect((*cmd)->fd[0], (*cmd)->fd[1]);

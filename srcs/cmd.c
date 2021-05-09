@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:11:34 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/06 18:25:58 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/07 18:26:45 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void		complete_struct(char *str, t_list_cmd **new)
 	(*new)->fd_redir = NULL;
 	(*new)->fd[0] = 0;
 	(*new)->fd[1] = 1;
-	(*new)->nb_arg = -1;
+//	(*new)->nb_arg = -1;
 }
 
 t_list_cmd	*ft_lstnew_cmd(char *content)

@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 15:08:56 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/20 11:01:42 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/07 07:25:05 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	check_redir_out(char *line, int i)
 {
-	if (line[--i] == ' ')
+	if (i > 0 && line[--i] == ' ')
 	{
 		while (line[i] == ' ' && i > 0)
 			i--;
@@ -23,7 +23,7 @@ int	check_redir_out(char *line, int i)
 	}
 	else if (line[i] == '<' && redir(line, i) == 0)
 		return (1);
-	else if (line[i] == '>' && redir(line, i) == 0)
+	else if (line[i] == '>' && redir(line, i) == 0 && i > 0)
 	{
 		if (line[--i] == ' ')
 			while (line[i] == ' ' && i > 0)

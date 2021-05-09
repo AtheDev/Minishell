@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/06 18:59:45 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/09 22:44:16 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct	s_list_cmd
 {
 	char	*cmd;
 	char	**arg_cmd;
-	int	nb_arg;
+//	int	nb_arg;
 	int	semicolon;
 	int	pipe;
 	int	nb_redir;
@@ -74,6 +74,8 @@ typedef struct	s_termcap
 	int	tot_hist;
 	int	rows_cursor;
 	int	cols_cursor;
+//	int	save_row_cursor;
+//	int	save_col_cursor;
 	int	rows_window;
 	int	cols_window;
 	int	rows_prompt;
@@ -86,6 +88,7 @@ typedef struct	s_termcap
 	char	*line;
 	char	*del_line;
 	char	*del_char;
+//	char	*del_many_char;
 	char	*move_left;
 	char	*move_cursor;
 }			t_termcap;
@@ -156,7 +159,7 @@ int	redir(char *str, int i);
 /*
 	***** DOLLAR *****
 */
-int	replace_variable(char **line, int *i, t_env *env, int quote);
+int	replace_variable(char **line, int *i, t_env *env/*, int quote*/);
 //int	check_dollar(char **line, int index, int *i, t_env *env);
 int	recover_variable(char **line, int *i, int *size_var, int *index, t_env *env);
 int	variable_not_found(char **line, char *tmp, int pos_dollar, int size_var);
@@ -166,7 +169,7 @@ int	var_is_digit_or_interrogation_point(char **line, int *i, char *tmp, t_env *e
 	***** DOLLAR UTILS *****
 */
 int	search_var_env(char **tmp, t_env *env, int size_tmp);
-int	swap_var_env(char **tmp, char **line, int pos, int size_var);
+int	swap_var_env(char **tmp, char **line, int *pos, int size_var);
 char	*add_str(char *str, char *line, int pos);
 int	save_value(char **tmp, char *env);
 int	check_variable(char *line, int *i, int quote);
@@ -175,6 +178,7 @@ int	check_variable(char *line, int *i, int quote);
 	***** WORD *****
 */
 int	delete_space(char **cmd, int i);
+int	delete_all_space(char **cmd, int i);
 
 /*
 	***** REDIR *****
@@ -226,7 +230,7 @@ int	ft_pwd(char **arg, t_env *env, t_termcap *t);
 	--> echo.c
 */
 int	chech_option_echo(char *str, int i);
-int	ft_echo(char **arg, int i, int n, int nb_arg);
+int	ft_echo(char **arg, int i, int n/*, int nb_arg*/);
 
 /*
 	--> exit.c
@@ -274,10 +278,10 @@ int	check_nb_arg(char **arg, int count);
 /*
 	***** EDIT ARG *****
 */
-int		dvlpmt_arg(char **arg, t_env *env, t_list_cmd **cmd);
-char	*edit_arg(char *str, t_env *env, int *ret);
-char	*edit_arg_other(char *str, int *i, t_env *env);
-char	*edit_arg_db_quotes(char *str, int *i, t_env *env, int *ret);
+/*int*/char		**dvlpmt_arg(char **arg, t_env *env/*, t_list_cmd **cmd*/);
+char	*edit_arg(char *str, t_env *env, int i, int *quote);
+char	*edit_arg_other(char *str, int *i, t_env *env, int *quote);
+char	*edit_arg_db_quotes(char *str, int *i, t_env *env/*, int *ret*/);
 
 /*
 	***** UTILS *****
@@ -301,7 +305,7 @@ void	cancel_redirect(t_list_cmd *cmd, t_env *env, int fork);
 */
 int	process_redir_cmd(t_list_cmd **cmd, int nb_redir);
 int	open_file(t_list_cmd **cmd, int i, int *index);
-char	**delete_redir_and_file(char **cmd, int nb, int nb2);
+char	**delete_redir_and_file(char **cmd, int nb, int nb2/*, int nb_arg*/);
 int	close_redir(t_list_cmd **cmd);
 
 /*
@@ -321,7 +325,7 @@ void	clear_termcap(t_termcap *t);
 /*
 	***** PROMPT *****
 */
-int	prompt(t_termcap *t);
+int	prompt(t_termcap *t, t_env *env);
 
 /*
 	***** ERROR *****
@@ -369,10 +373,10 @@ int	get_size_window(t_termcap *t);
 /*
 	***** HISTORY *****
 */
-void	print_history(t_list **hist, int index, char **input, t_termcap *t);
+void	print_history(t_list **hist, int index, /*char **input,*/ t_termcap *t, t_env *env);
 int	save_history(char *input, t_list **history, t_termcap *t);
-int	up_history(t_termcap *t);
-int	down_history(t_termcap *t);
+int	up_history(t_termcap *t, t_env *env);
+int	down_history(t_termcap *t, t_env *env);
 
 /*
 	***** SIGNAL *****

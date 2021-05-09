@@ -6,31 +6,32 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 17:59:17 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/03 19:01:30 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/07 18:44:08 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**delete_redir_and_file(char **cmd, int nb, int nb2)
+char	**delete_redir_and_file(char **cmd, int nb, int nb2/*, int nb_arg*/)
 {
 	char	**new;
 	int		i;
 	int		j;
 
+//	new = malloc(sizeof(char *) * (nb_arg - (2 * nb2) + (nb - nb2) + 1));
 	new = malloc(sizeof(char *) * (check_nb_arg(cmd, 0) - (2 * nb2) + (nb - nb2) + 1));
 	if (new == NULL)
 		return (NULL);
 	i = 0;
 	j = -1;
-	while (cmd[i] != NULL)
+	while (cmd[i] != NULL/*i < nb_arg*/)
 	{
-		if (ft_strncmp(cmd[i], "<", 2) == 0 && 
+		if (/*cmd[i] != NULL && */ft_strncmp(cmd[i], "<", 2) == 0 && 
 		(ft_strncmp(cmd[i + 1], ">", 2) == 0 ||
 		ft_strncmp(cmd[i + 1], ">>", 3) == 0))
 			i = i + 1;
-		else if (ft_strncmp(cmd[i], ">", 2) == 0 || ft_strncmp(cmd[i], "<", 2)
-		== 0 || ft_strncmp(cmd[i], ">>", 3) == 0)
+		else if (/*cmd[i] != NULL && */(ft_strncmp(cmd[i], ">", 2) == 0
+		|| ft_strncmp(cmd[i], "<", 2) == 0 || ft_strncmp(cmd[i], ">>", 3) == 0))
 			i = i + 2;
 		else if (cmd[i] != NULL)
 		{
@@ -39,9 +40,11 @@ char	**delete_redir_and_file(char **cmd, int nb, int nb2)
 				return (new = ft_free_tab(new, i));
 			i++;
 		}
+		//else if (cmd[i] == NULL)
+		//	i++;
 	}
 	new[++j] = NULL;
-	ft_free_tab(cmd, check_nb_arg(cmd, 0));
+	ft_free_tab(cmd, check_nb_arg(cmd, 0)/*nb_arg*/);
 	return (new);
 }
 
@@ -127,7 +130,8 @@ int		process_redir_cmd(t_list_cmd **cmd, int nb_redir)
 		i++;
 		nb_redir--;
 	}
-	if (((*cmd)->arg_cmd = delete_redir_and_file((*cmd)->arg_cmd, nb, (*cmd)->nb_redir)) == NULL)
+	if (((*cmd)->arg_cmd = delete_redir_and_file((*cmd)->arg_cmd, nb, (*cmd)->nb_redir/*, (*cmd)->nb_arg*/)) == NULL)
 		return (error_msg(2, ' '));
+//	(*cmd)->nb_arg = check_nb_arg((*cmd)->arg_cmd, 0);
 	return (0);
 }

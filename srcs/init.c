@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 19:14:25 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/06 16:24:57 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/09 22:44:05 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ int	init2(t_env *env, char **envp, t_termcap *t)
 	t->tot_hist = 0;
 	t->del_char = tgetstr("dc", NULL);
 	t->del_line = tgetstr("dl", NULL);
+//	t->del_many_char = tgetstr("ce", NULL);
 	t->move_left = tgetstr("le", NULL);
 	t->move_cursor = tgetstr("cm", NULL);
 	return (0);		
@@ -96,6 +97,9 @@ void	init(t_list **cmd_tmp, t_list_cmd **cmd, t_termcap *t)
 void	init_read(t_termcap *t)
 {
 	get_pos_cursor(t);
+//	t->save_row_cursor = t->rows_cursor;
+//	t->save_col_cursor = t->cols_cursor - t->size_prompt;
+//ft_putnbr_fd(t->save_col_cursor, 2);
 	get_size_window(t);
 	t->rows_prompt = t->rows_cursor;
 	t->cols_prompt = 1;

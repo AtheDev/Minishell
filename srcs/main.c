@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:03:14 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/06 18:41:21 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/08 10:33:02 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ int	main(int argc, char **argv, char **envp)
 		ret = loop_read_and_parsing(&env, &termcap, &cmd_tmp, &cmd);
 		if (ret == 0)
 			ret = save_cmd(&cmd, cmd_tmp);
+//print_struct_complete(&cmd);
 		if (ret == -1)
 			return (process_end_ko(&env, &termcap, cmd_tmp, cmd));
 		else if (ret == 0)

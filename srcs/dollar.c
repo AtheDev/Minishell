@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 09:56:23 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/06 13:47:58 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/08 15:54:24 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,13 +119,19 @@ int	recover_variable(char **line, int *i, int *size_var, int *index, t_env *env)
 	if (ret == -1)
 		free(tmp);
 	else if (ret == 1)
+	{	*index = pos_dollar;
 		return (variable_not_found(line, tmp, pos_dollar, *size_var));
+	}
 	else if (ret == 0)
-		return (swap_var_env(&tmp, line, pos_dollar, *size_var));
+	{
+		/*return (*/ret = swap_var_env(&tmp, line, &pos_dollar, *size_var)/*)*/;
+		*index = pos_dollar;
+		return (ret);
+	}
 	return (ret);
 }
 
-int	replace_variable(char **line, int *i, t_env *env, int quote)
+int	replace_variable(char **line, int *i, t_env *env/*, int quote*/)
 {
 	char	*tmp;
 	int		index;
@@ -143,15 +149,15 @@ int	replace_variable(char **line, int *i, t_env *env, int quote)
 	ret = recover_variable(line, i, &size_var, &index, env);
 	process_free(tmp, NULL);
 	if (ret == 0)
-		*i = pos_dollar - 1;
+		*i = /*pos_dollar*/index - 1;
 	else if (ret == -1)
 		return (error_msg(2, ' '));
-	else
-		*i = --(*i) + index - size_var - 2;
-	if ((*line)[0] == '"' && quote == 1)
+	//else
+	//	*i = --(*i) + index - size_var - 2;
+	/*if ((*line)[0] == '"' && quote == 1)
 	{
 		*line = ft_free(*line);
 		return (2);
-	}
+	}*/
 	return (0);
 }

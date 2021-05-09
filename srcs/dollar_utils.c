@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 15:04:11 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/02 12:53:30 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/08 16:42:38 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,14 +77,17 @@ char	*add_str(char *str, char *line, int pos)
 	return (tmp);
 }
 
-int		swap_var_env(char **tmp, char **line, int pos, int size_var)
+int		swap_var_env(char **tmp, char **line, int *pos, int size_var)
 {
 	int		size_tmp;
 	char	*str;
 	char	*tmp2;
+	int	new_size;
 
+	if (delete_all_space(tmp, -1) == -1)
+		return (error_msg(2, ' '));
 	size_tmp = ft_strlen(*tmp);
-	tmp2 = ft_substr(*line, 0, pos);
+	tmp2 = ft_substr(*line, 0, *pos);
 	if (tmp2 == NULL)
 		return (-1);
 	str = ft_strjoin(tmp2, *tmp);
@@ -92,11 +95,13 @@ int		swap_var_env(char **tmp, char **line, int pos, int size_var)
 	free(*tmp);
 	if (str == NULL)
 		return (-1);
-	str = add_str(str, *line, size_var + pos + 1);
+	new_size = ft_strlen(str);
+	str = add_str(str, *line, size_var + *pos + 1);
 	if (str == NULL)
 		return (-1);
 	*line = ft_free(*line);
 	*line = str;
+	*pos = new_size;
 	return (0);
 }
 

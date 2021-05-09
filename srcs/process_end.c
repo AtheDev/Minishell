@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:16:56 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/06 18:28:39 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/09 22:42:05 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,22 +35,10 @@ void	clear_cmd(t_list_cmd *cmd)
 	{
 		tmp = cmd->next_cmd;
 		i = 0;
-		if (cmd->nb_arg != -1)
+		while (cmd->arg_cmd[i] != NULL)
 		{
-			while (i < cmd->nb_arg)
-			{
-				if (cmd->arg_cmd[i] != NULL)
-					free(cmd->arg_cmd[i]);
-				i++;
-			}
-		}
-		else
-		{
-			while (cmd->arg_cmd[i] != NULL)
-			{
-				free(cmd->arg_cmd[i]);
-				i++;
-			}
+			free(cmd->arg_cmd[i]);
+			i++;
 		}
 		free(cmd->arg_cmd);
 		cmd->arg_cmd = NULL;
