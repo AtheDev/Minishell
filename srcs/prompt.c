@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:55:17 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/09 21:33:33 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/10 22:40:20 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ int	prompt(t_termcap *t, t_env *env)
 	else
 	{
 		if ((value = check_diff_with_var_env(value, env, t)) != NULL)
-		{
+		{ 
 		size = 10 + ft_strlen(value);
-		t->save_prompt = ft_free(t->save_prompt);
+			t->save_prompt = ft_free(t->save_prompt);
 		if ((t->save_prompt = ft_strdup(value)) != NULL)
 			tmp = ft_strjoin("\033[34m", value);
 		free(value);

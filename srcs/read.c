@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 22:00:04 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/09 21:03:33 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/10 14:11:12 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int		check_char(char *buff, t_termcap *t, t_env *env)
 
 void	reset_after_g_sig(t_termcap *t, t_env *env)
 {
-	g_sig = 0;
+	g_sig.sig = 0;
 	if (t->input != NULL)
 		t->input = ft_free(t->input);
 	t->pos_hist = 0;
@@ -92,7 +92,7 @@ int		process_read(t_termcap *t, int ret, int new_line, t_env *env)
 	while ((ret = read(0, &buff, BUFFER_SIZE)))
 	{
 		buff[ret] = '\0';
-		if (g_sig == 1)
+		if (g_sig.sig == 1)
 			reset_after_g_sig(t, env);
 		if ((new_line = check_char(buff, t, env)) <= 0)
 			break ;
@@ -103,7 +103,7 @@ int		process_read(t_termcap *t, int ret, int new_line, t_env *env)
 		get_size_window(t);
 	}
 	ret = 0;
-	if (new_line == 0 && g_sig == 0 && t->input != NULL)
+	if (new_line == 0 && g_sig.sig == 0 && t->input != NULL)
 		ret = save_history(t->input, &t->history, t);
 	else if (new_line == 0 && t->input == NULL)
 		return (2);

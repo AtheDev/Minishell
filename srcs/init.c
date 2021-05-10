@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 19:14:25 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/09 22:44:05 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/10 14:14:04 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,13 @@ int	save_pwd(t_env *env, t_termcap *t)
 
 int	init2(t_env *env, char **envp, t_termcap *t)
 {
-	g_sig = 0;
+//printf("ICI\n");
+	g_sig.sig = 0;
+//printf("1\n");
 	signal(SIGINT, handler_sigint);
+//printf("2\n");
 	signal(SIGQUIT, handler_sigquit);
+//printf("3\n");
 	if (*envp != NULL)
 	{
 		*env = copy_env(envp, 1, 0);
@@ -80,9 +84,13 @@ int	init2(t_env *env, char **envp, t_termcap *t)
 	t->tot_hist = 0;
 	t->del_char = tgetstr("dc", NULL);
 	t->del_line = tgetstr("dl", NULL);
-//	t->del_many_char = tgetstr("ce", NULL);
+	t->del_many_char = tgetstr("ce", NULL);
 	t->move_left = tgetstr("le", NULL);
 	t->move_cursor = tgetstr("cm", NULL);
+//printf("Cas n°1\n");
+//	g_sig->t = t;
+//	g_sig->env = env;
+//printf("Cas n°2\n");
 	return (0);		
 }
 
@@ -97,14 +105,14 @@ void	init(t_list **cmd_tmp, t_list_cmd **cmd, t_termcap *t)
 void	init_read(t_termcap *t)
 {
 	get_pos_cursor(t);
-//	t->save_row_cursor = t->rows_cursor;
-//	t->save_col_cursor = t->cols_cursor - t->size_prompt;
+	t->save_row_cursor = t->rows_cursor;
+	t->save_col_cursor = t->cols_cursor - t->size_prompt;
 //ft_putnbr_fd(t->save_col_cursor, 2);
 	get_size_window(t);
 	t->rows_prompt = t->rows_cursor;
 	t->cols_prompt = 1;
 	t->pos_hist = 0;
 	t->pos_cursor = t->size_prompt;
-	g_sig = 0;
+	g_sig.sig = 0;
 	t->input_tmp = NULL;
 }

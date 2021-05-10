@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 18:25:03 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/09 22:44:41 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/10 14:13:24 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int		save_history(char *input, t_list **history, t_termcap *t)
 }
 
 void	print_history(t_list **hist, int index, t_termcap *t, t_env *env)
-{
+{(void)env;
 	t_list	*hist_tmp;
 	int		i;
 
@@ -43,8 +43,8 @@ void	print_history(t_list **hist, int index, t_termcap *t, t_env *env)
 	i = -1;
 	while ((++i < (index - 1)) && (i < (t->tot_hist - 1)))
 		*hist = (*hist)->next;
-	if (g_sig == 0)
-		prompt(t, env);
+	if (g_sig.sig == 0)
+		prompt(&g_sig.t, &g_sig.env);
 	if (t->pos_hist > 0)
 		ft_putstr_fd((*hist)->content, 1);
 	else if (t->pos_hist == 0)
@@ -70,9 +70,9 @@ void	delete_line_history(t_termcap *t)
 	size = 0;
 	if (t->input != NULL)
 		size = (int)ft_strlen(t->input);
-	if (size + t->size_prompt >= t->cols_window)
+	if (size + t->size_prompt + t->save_col_cursor >= t->cols_window)
 	{
-		count = ((int)ft_strlen(t->input) + t->size_prompt) / t->cols_window;
+		count = ((int)ft_strlen(t->input) + t->size_prompt + t->save_col_cursor) / t->cols_window;
 		while (count > 0)
 		{
 			tputs(t->del_line, 0, &ft_putchar);
@@ -81,8 +81,8 @@ void	delete_line_history(t_termcap *t)
 			count--;
 		}	
 	}
-	//	tputs(tgoto(t->move_cursor, t->save_col_cursor, t->rows_cursor - 2), 0, &ft_putchar);
-	//	tputs(t->del_many_char, 0, &ft_putchar);
+		tputs(tgoto(t->move_cursor, t->save_col_cursor - 1, t->rows_cursor - 1), 0, &ft_putchar);
+		tputs(t->del_many_char, 0, &ft_putchar);
 	//	t->rows_cursor--;
 //	}
 }
@@ -101,7 +101,7 @@ int		up_history(t_termcap *t, t_env *env)
 	if (t->pos_hist == 0 && t->input_tmp == NULL)
 		return (error_msg(2, ' '));
 	delete_line_history(t);
-	tputs(t->del_line, 0, &ft_putchar);
+	//tputs(t->del_line, 0, &ft_putchar);
 	if (t->pos_hist != t->tot_hist)
 		t->pos_hist++;
 	print_history(&t->history, t->pos_hist, t, env);
@@ -111,7 +111,7 @@ int		up_history(t_termcap *t, t_env *env)
 int		down_history(t_termcap *t, t_env *env)
 {
 	delete_line_history(t);
-	tputs(t->del_line, 0, &ft_putchar);
+	//tputs(t->del_line, 0, &ft_putchar);
 	if (t->pos_hist > 0)
 		t->pos_hist--;
 	print_history(&t->history, t->pos_hist, t, env);
