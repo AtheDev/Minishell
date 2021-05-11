@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 11:03:35 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/03 16:41:08 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 12:03:03 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,19 +92,33 @@ int		process_add_var_env(char *arg, t_env **env)
 {
 	int		i;
 	char	*key;
+	int		equal;
 
 	i = 0;
-	while (arg[i] != '=')
-		i++;
-	if ((key = ft_substr(arg, 0, i)) == NULL)
-		return (-1);
+	equal = 1;
+	if (ft_strchr(arg, '=') != NULL)
+	{
+		while (arg[i] != '=')
+			i++;
+		if ((key = ft_substr(arg, 0, i)) == NULL)
+			return (-1);
+	}
+	else
+	{
+		equal = 0;
+		if ((key = ft_strdup(arg)) == NULL)
+			return (-1);
+	}
 	i = 0;
 	while ((*env)->var_env[i] != NULL)
 	{
 		if (ft_my_strncmp((*env)->var_env[i], key, ft_strlen(key)) == 0)
 		{
-			free((*env)->var_env[i]);
-			(*env)->var_env[i] = ft_strdup(arg);
+			if (equal == 1)
+			{
+				free((*env)->var_env[i]);
+				(*env)->var_env[i] = ft_strdup(arg);
+			}
 			key = ft_free(key);
 			if ((*env)->var_env[i] == NULL)
 				return (-1);

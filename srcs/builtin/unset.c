@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 13:10:10 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/29 22:46:52 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 11:45:57 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	check_arg_var(char **arg, int cmd)
 		}
 		i++;
 	}
-	if (cmd == 1)
+	if ((*arg)[0] == '\0')
 		return (-1);
 	return (0);
 }
@@ -37,8 +37,10 @@ int	check_arg_var(char **arg, int cmd)
 int	ft_unset(char **arg, t_env **env)
 {
 	int	i;
+	int	ret;
 
 	i = 1;
+	ret = 0;
 	if (arg[i] != NULL)
 	{
 		while (arg[i] != NULL)
@@ -49,9 +51,12 @@ int	ft_unset(char **arg, t_env **env)
 					return (error_msg(2, ' '));
 			}
 			else
+			{
 				error_msg_with_string(5, arg[i]);
+				ret = 1;
+			}
 			i++;
 		}
 	}
-	return (0);
+	return (ret);
 }
