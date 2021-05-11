@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/09 22:44:16 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 10:51:30 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 # define ULL_LIMIT_MAX 9223372036854775807
 # define LL_LIMIT_MIN "-9223372036854775808"
 
-int	g_sig;
+//int	g_sig;
 
 typedef struct	s_env
 {
@@ -74,8 +74,8 @@ typedef struct	s_termcap
 	int	tot_hist;
 	int	rows_cursor;
 	int	cols_cursor;
-//	int	save_row_cursor;
-//	int	save_col_cursor;
+	int	save_row_cursor;
+	int	save_col_cursor;
 	int	rows_window;
 	int	cols_window;
 	int	rows_prompt;
@@ -88,10 +88,19 @@ typedef struct	s_termcap
 	char	*line;
 	char	*del_line;
 	char	*del_char;
-//	char	*del_many_char;
+	char	*del_many_char;
 	char	*move_left;
 	char	*move_cursor;
 }			t_termcap;
+
+typedef struct	s_utils
+{
+	t_termcap	t;
+	t_env		env;
+	int	sig;
+}		t_utils;
+
+t_utils		g_sig;
 
 /*
 	***** ENV *****
@@ -304,7 +313,7 @@ void	cancel_redirect(t_list_cmd *cmd, t_env *env, int fork);
 	***** REDIRECT *****
 */
 int	process_redir_cmd(t_list_cmd **cmd, int nb_redir);
-int	open_file(t_list_cmd **cmd, int i, int *index);
+int	open_file(t_list_cmd **cmd, int i, int *index, char *tmp);
 char	**delete_redir_and_file(char **cmd, int nb, int nb2/*, int nb_arg*/);
 int	close_redir(t_list_cmd **cmd);
 
