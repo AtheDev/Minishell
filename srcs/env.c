@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:06:13 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/11 17:16:16 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 17:34:04 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ char	*inc_shlvl(char *str)
 
 	tmp = get_value_var_env(str);
 	if (tmp == NULL)
+		shlvl = 0;
+	else if (ft_str_digit(tmp) == 1)
 		shlvl = 0;
 	else
 		shlvl = ft_atoi(tmp);

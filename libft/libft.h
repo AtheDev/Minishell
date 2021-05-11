@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/19 15:39:51 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/05 16:17:25 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 17:33:14 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,5 +122,7 @@ char			*ft_strcpy(char *dest, char *src);
 char			*ft_strcat(char *dest, char *src);
 
 char			*ft_strncat(char *dest, char *src, unsigned int nb);
+
+int				ft_str_digit(char *str);
 
 #endif
