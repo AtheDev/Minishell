@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:06:13 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/11 17:34:04 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 18:24:34 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,56 @@ void	add_elt_env(t_env *env)
 	env->fd[1] = dup(1);
 }
 
+int	check_is_num(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == ' ')
+	{
+		while (str[i] == ' ' && str[i] != '\0')
+			i++;
+		if (str[i] == '\0')
+			return (1);
+		i++;
+	}
+	while (str[i] != ' ' && str[i] != '\0')
+	{
+		if (ft_isdigit(str[i]) == 0)
+			return (1);
+		i++;
+	}
+	if (str[i] == ' ')
+	{
+		i++;
+		while (str[i] != '\0')
+		{
+			if (ft_isspace(str[i]) == 0)
+				return (1);
+			i++;
+		}
+	}
+	return (0);
+}
+
 char	*inc_shlvl(char *str)
 {
 	char	*tmp;
 	char	*sh;
 	long long		shlvl;
+	int		i;
 
+	i = 0;
 	tmp = get_value_var_env(str);
 	if (tmp == NULL)
 		shlvl = 0;
-	else if (ft_str_digit(tmp) == 1)
-		shlvl = 0;
 	else
-		shlvl = ft_atoi(tmp);
+	{
+		if (check_is_num(tmp) == 1)
+			shlvl = 0;
+		else
+			shlvl = ft_atoi(tmp);
+	}
 	if (shlvl < -1)
 		shlvl = -1;
 	else if (shlvl >= SHLVL_MIN && shlvl <= SHLVL_MAX)
