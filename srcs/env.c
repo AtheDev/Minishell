@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:06:13 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/03 11:37:00 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 17:16:16 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	add_elt_env(t_env *env)
 {
 	env->exit = 0;
 	env->return_value = 0;
-//	env->tilde = get_value_var_env(get_var_env(&env, "HOME"));
 	env->fd[0] = dup(0);
 	env->fd[1] = dup(1);
 }
@@ -38,12 +37,24 @@ char	*inc_shlvl(char *str)
 {
 	char	*tmp;
 	char	*sh;
-	int		shlvl;
+	long long		shlvl;
 
 	tmp = get_value_var_env(str);
 	if (tmp == NULL)
-		return (NULL);
-	shlvl = ft_atoi(tmp);
+		shlvl = 0;
+	else
+		shlvl = ft_atoi(tmp);
+	if (shlvl < -1)
+		shlvl = -1;
+	else if (shlvl >= SHLVL_MIN && shlvl <= SHLVL_MAX)
+	{
+		ft_putstr_fd("minishell: warning : shell level too high (", 2);
+		ft_putnbr_fd(shlvl + 1, 2);
+		ft_putstr_fd("), initialization to 1\n", 2);
+		shlvl = 0;
+	}
+	else if (shlvl > SHLVL_MAX)
+		shlvl = -1;
 	if ((tmp = ft_itoa(shlvl + 1)) == NULL)
 		return (NULL);
 	sh = ft_strjoin("SHLVL=", tmp);
@@ -54,8 +65,16 @@ char	*inc_shlvl(char *str)
 t_env	copy_env(char **envp, int init, size_t i)
 {
 	t_env	env;
+	int	shlvl;
 
+	shlvl = 0;
 	while (envp[i] != NULL)
+	{
+		if (ft_strncmp(envp[i], "SHLVL=", 6) == 0)
+			shlvl = 1;
+		i++;
+	}
+	if (shlvl == 0 && init == 1)
 		i++;
 	env.size = i + 1;
 	env.var_env = malloc(sizeof(char *) * (i + 1));
@@ -64,7 +83,9 @@ t_env	copy_env(char **envp, int init, size_t i)
 	i = -1;
 	while (++i < (env.size - 1))
 	{
-		if (ft_strncmp(envp[i], "SHLVL=", 6) == 0 && init == 1)
+		if (shlvl == 0 && init == 1 && (i == env.size - 2))
+			env.var_env[i] = ft_strdup("SHLVL=1");
+		else if (ft_strncmp(envp[i], "SHLVL=", 6) == 0 && init == 1)
 			env.var_env[i] = inc_shlvl(envp[i]);
 		else
 			env.var_env[i] = ft_strdup(envp[i]);

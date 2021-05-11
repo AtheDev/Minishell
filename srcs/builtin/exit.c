@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 14:13:05 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/30 00:23:46 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 15:43:37 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	ft_exit(char **arg, t_env **env, int fork)
 	if (arg[1] != NULL)
 	{
 		val = long_long_atoi(arg[1]);
-		if (check_value_arg(arg[1]) != 0 || (val > ULL_LIMIT_MAX
+		if (check_value_arg(arg[1]) != 0 || (val > LL_LIMIT_MAX
 		&& ft_strncmp(arg[1], LL_LIMIT_MIN, 21) != 0))
 		{
 			(*env)->exit = error_msg_with_string(4, arg[1]);

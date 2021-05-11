@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/11 10:51:30 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 16:37:36 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,10 @@
 #include <sys/ioctl.h>
 
 # define CHAR_PROTEC "\"\\`$\\n"
-# define ULL_LIMIT_MAX 9223372036854775807
+# define LL_LIMIT_MAX 9223372036854775807
 # define LL_LIMIT_MIN "-9223372036854775808"
+# define SHLVL_MAX 2147483646
+# define SHLVL_MIN 999
 
 //int	g_sig;
 
