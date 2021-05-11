@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:26:08 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/08 17:02:23 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 23:38:25 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int	analysis_input(char **line, int i, t_list **cmd)
 		if (ret == 1 || ret == -1)
 			return (ret);
 	}
-	if (((*line)[i] == '\0' && ret != 4/*(*line)[i - 2] != ';'*/) || ret == 2)
+	if (((*line)[i] == '\0' && ret != 4) || ret == 2)
 		ret = analysis_sep(line, &i, &start_cmd, cmd);
 	if (ret <= 1)
 		return (ret);

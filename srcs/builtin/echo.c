@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 10:24:02 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/09 22:42:31 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 19:57:50 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,8 @@ int	check_option_echo(char *str, int i)
 int	ft_echo(char **arg, int i, int n)
 {
 	if (arg[1] != NULL)
-	{
 		if (check_option_echo(arg[1], 0) == 0)
 			n = 1;
-	}
 	i = i + n;
 	if (arg[i] != NULL)
 	{

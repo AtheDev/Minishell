@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 15:04:11 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/08 16:42:38 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 23:44:45 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int		swap_var_env(char **tmp, char **line, int *pos, int size_var)
 	int		size_tmp;
 	char	*str;
 	char	*tmp2;
-	int	new_size;
+	int		new_size;
 
 	if (delete_all_space(tmp, -1) == -1)
 		return (error_msg(2, ' '));

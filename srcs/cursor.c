@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/27 11:15:35 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/27 14:45:25 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 23:41:03 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	read_buff(t_termcap *t, char *buff)
 void	get_pos_cursor(t_termcap *t)
 {
 	char	buff[255];
-	int	ret;
+	int		ret;
 
 	if ((write(STDOUT_FILENO, "\x1b[6n", 4)) != 4)
 		return ;
@@ -50,16 +50,10 @@ void	get_pos_cursor(t_termcap *t)
 		return ;
 	buff[ret] = '\0';
 	read_buff(t, buff);
-/*ft_putstr_fd("r=", 2);
-ft_putnbr_fd(t->rows_cursor, 2);
-ft_putstr_fd("c=", 2);
-ft_putnbr_fd(t->cols_cursor, 2);*/
-
-//printf("row = %d et col = %d\n", t->rows_cursor, t->cols_cursor);
 	return ;
 }
 
-int	get_size_window(t_termcap *t)
+int		get_size_window(t_termcap *t)
 {
 	struct winsize	ws;
 

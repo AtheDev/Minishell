@@ -6,18 +6,17 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 14:13:05 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/11 15:43:37 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 20:06:08 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	check_value_arg(char *str)
+int					check_value_arg(char *str)
 {
 	int	i;
 
 	i = 0;
-
 	if (str[i] == '-' || str[i] == '+')
 		i++;
 	if (str[i] == '\0')
@@ -33,8 +32,8 @@ int	check_value_arg(char *str)
 
 unsigned long long	long_long_atoi(const char *str)
 {
-	int i;
-	unsigned long long res;
+	int					i;
+	unsigned long long	res;
 
 	i = 0;
 	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
@@ -49,7 +48,8 @@ unsigned long long	long_long_atoi(const char *str)
 	}
 	return (res);
 }
-int	ft_exit(char **arg, t_env **env, int fork)
+
+int					ft_exit(char **arg, t_env **env, int fork)
 {
 	unsigned long long	val;
 

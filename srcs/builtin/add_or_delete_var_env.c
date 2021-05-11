@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 11:03:35 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/11 12:03:03 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 23:15:48 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,14 +88,33 @@ char	**add_var_env(char *arg, char **var_env, size_t size)
 	return (tmp);
 }
 
-int		process_add_var_env(char *arg, t_env **env)
+int		var_env_present(char *arg, t_env **env, int equal, char *key)
 {
-	int		i;
-	char	*key;
-	int		equal;
+	int	i;
 
-	i = 0;
-	equal = 1;
+	i = -1;
+	while ((*env)->var_env[++i] != NULL)
+	{
+		if (ft_my_strncmp((*env)->var_env[i], key, ft_strlen(key)) == 0)
+		{
+			if (equal == 1)
+			{
+				free((*env)->var_env[i]);
+				(*env)->var_env[i] = ft_strdup(arg);
+			}
+			key = ft_free(key);
+			if ((*env)->var_env[i] == NULL)
+				return (-2);
+			return (-1);
+		}
+	}
+	return (i);
+}
+
+int		process_add_var_env(char *arg, t_env **env, int i, int equal)
+{
+	char	*key;
+
 	if (ft_strchr(arg, '=') != NULL)
 	{
 		while (arg[i] != '=')
@@ -109,27 +128,11 @@ int		process_add_var_env(char *arg, t_env **env)
 		if ((key = ft_strdup(arg)) == NULL)
 			return (-1);
 	}
-	i = 0;
-	while ((*env)->var_env[i] != NULL)
-	{
-		if (ft_my_strncmp((*env)->var_env[i], key, ft_strlen(key)) == 0)
-		{
-			if (equal == 1)
-			{
-				free((*env)->var_env[i]);
-				(*env)->var_env[i] = ft_strdup(arg);
-			}
-			key = ft_free(key);
-			if ((*env)->var_env[i] == NULL)
-				return (-1);
-			return (0);
-		}
-		i++;
-	}
+	if ((i = var_env_present(arg, env, equal, key)) < 0)
+		return (i + 1);
 	if ((*env)->var_env[i] == NULL)
 	{
-		(*env)->size++;
-		(*env)->var_env = add_var_env(arg, (*env)->var_env, (*env)->size);
+		(*env)->var_env = add_var_env(arg, (*env)->var_env, ++(*env)->size);
 		free(key);
 		if ((*env)->var_env == NULL)
 			return (-1);
