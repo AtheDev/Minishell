@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 20:48:30 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/13 15:47:42 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/13 23:15:23 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ void				error_shlvl(long long *shlvl);
 char				*get_value_var_env(char *str);
 char				*get_var_env(t_env **env, char *str);
 char				*get_key_var_env(char *str);
+char				*ft_strrchr_rev_rev(const char *s, int c);
 
 /*
 	***** GNL *****
@@ -128,6 +129,7 @@ char				*get_key_var_env(char *str);
 int					get_next_line(int fd, char **line);
 int					ft_is_end_line(char *str);
 char				*ft_my_strjoin(char *s1, char *s2);
+int					save_line(char **line, char *str, int ret);
 
 /*
 	***** ANALYSIS LINE *****
@@ -139,6 +141,7 @@ int					analysis_redir(char **line, int *i);
 int					analysis_sep
 						(char **line, int *i, int *start_cmd, t_list **cmd);
 int					analysis_quote(char *line, int *i);
+
 /*
 	***** LINE *****
 */
@@ -201,7 +204,9 @@ int					check_variable(char *line, int *i, int quote);
 	***** WORD *****
 */
 int					delete_space(char **cmd, int i);
+int					delete_space2(char **cmd, int *i, int num);
 int					delete_all_space(char **cmd, int i);
+int					delete_all_space2(char **cmd, int *i);
 
 /*
 	***** REDIR *****
@@ -259,6 +264,8 @@ int					search_last_return_value
 */
 int					is_builtin
 				(t_env *env, t_list_cmd **cmd, int fork, t_list_cmd **tmp);
+int					is_builtin_next
+				(int ret, int fork, t_env *env, t_list_cmd **tmp);
 int					ft_pwd(char **arg, t_env *env, t_termcap *t);
 int					chech_option_echo(char *str, int i);
 int					ft_echo(char **arg, int i, int n);
@@ -267,10 +274,15 @@ unsigned long long	long_long_atoi(const char *str);
 int					check_value_arg(char *str);
 int					ft_env(char **arg, t_env *env);
 int					sort_env(t_env **env, int i);
+int					print_env(char **var_env, int i, t_env **env);
+int					swap_env(t_env *cp, int *i, char *tmp, int size);
 int					ft_export(char **arg, t_env **env);
 int					ft_unset(char **arg, t_env **env);
 int					check_arg_var(char **arg, int cmd);
 int					ft_cd(char **arg, t_env **env, t_termcap *t);
+int					process_cd_oldpwd(t_env **env, t_termcap *t);
+int					process_cd_home(t_env **env, t_termcap *t);
+int					process_cd(char *path, t_termcap *t, t_env **env);
 void				error_getcwd(void);
 int					update_var_env_pwd(t_env **env, t_termcap *t);
 int					update_var_env_oldpwd(t_env **env, t_termcap *t);
@@ -279,6 +291,8 @@ char				*new_pwd(t_termcap *t, char *path);
 int					process_add_var_env
 				(char *arg, t_env **env, int i, int equal);
 char				**add_var_env(char *arg, char **var_env, size_t size);
+int					var_env_present
+				(char *arg, t_env **env, int equal, char *key);
 int					process_delete_var_env(char *arg, t_env **env);
 char				**delete_var_env(char **var_env, int num, size_t size);
 int					check_nb_arg(char **arg, int count);
@@ -337,6 +351,9 @@ int					error_redirect
 	***** PATH *****
 */
 int					search_path(char **arg, t_env **env, int ret);
+int					check_with_stat(t_env **env, char *arg);
+int					search_in_var_env_path(t_env **env, char **arg, int i);
+int					loop_readdir(DIR *rep, char **arg, char **path, int i);
 
 /*
 	***** PROCESS END *****
@@ -352,6 +369,10 @@ void				clear_termcap(t_termcap *t);
 	***** PROMPT *****
 */
 int					prompt(t_termcap *t, t_env *env);
+char				*get_value_prompt
+				(char *value, t_termcap *t, t_env *env, int *size);
+char				*check_diff_with_var_env
+				(char *str, t_env *env, t_termcap *t);
 
 /*
 	***** ERROR *****
@@ -363,20 +384,13 @@ int					error_term(int num, char *str);
 int					error_stat_and_path(int num, char *str);
 
 /*
-	***** PRINT *****
-*/
-void				print_lst(t_list *lst);
-void				print_arg_cmd(char **arg_cmd);
-void				print_struct(t_list_cmd *lst);
-void				print_struct_complete(t_list_cmd **cmd);
-void				print_hist(t_list **hist);
-
-/*
 	***** INIT *****
 */
 void				init(t_list **cmd_tmp, t_list_cmd **cmd, t_termcap *t);
 int					init2(t_env *env, char **envp, t_termcap *t);
 void				init_read(t_termcap *t);
+int					save_pwd(t_env *env, t_termcap *t);
+char				*find_home(char *str);
 
 /*
 	***** READ *****
@@ -384,6 +398,14 @@ void				init_read(t_termcap *t);
 int					process_read
 				(t_termcap *termcap, int ret, int new_line, t_env *env);
 int					loop_read(t_termcap *t, t_env *env);
+void				reset_after_g_sig(t_termcap *t, t_env *env);
+
+/*
+	***** READ UTILS *****
+*/
+int					check_char(char *buff, t_termcap *t);
+int					up_and_down(char *buff, t_termcap *t);
+int					key_delete(t_termcap *t, int size);
 
 /*
 	***** TERMCAP *****
@@ -404,6 +426,7 @@ void				print_history(t_list **hist, int index, t_termcap *t);
 int					save_history(char *input, t_list **history, t_termcap *t);
 int					up_history(t_termcap *t);
 int					down_history(t_termcap *t);
+void				delete_line_history(t_termcap *t);
 
 /*
 	***** SIGNAL *****

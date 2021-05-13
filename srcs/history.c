@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 18:25:03 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/12 09:34:08 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/13 22:23:24 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,7 @@ void	delete_line_history(t_termcap *t)
 		size = (int)ft_strlen(t->input);
 	if (size + t->size_prompt + t->save_col_cursor >= t->cols_window)
 	{
-		count = ((int)ft_strlen(t->input) + t->size_prompt +
-		t->save_col_cursor) / t->cols_window;
+		count = (size + t->size_prompt + t->save_col_cursor) / t->cols_window;
 		while (count > 0)
 		{
 			tputs(t->del_line, 0, &ft_putchar);

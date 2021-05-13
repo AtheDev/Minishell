@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/04 14:57:47 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/11 23:36:02 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/13 15:56:11 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,7 @@ int		process_cd_home(t_env **env, t_termcap *t)
 	if (home == NULL)
 		return (error_msg_with_string(2, "HOME"));
 	if (home[0] == '\0')
-	{
 		return (0);
-		//update_var_env(env, t);
-		// Rien à l'affichage
-		// MAJ de PWD et OLDPWD
-		// if unset PWD export HOME= et cd
-		//	MAJ qui supprime OLDPWD
-		// if unset OLDPWD export HOME= et cd
-		//	RIEN (PWD existe tjr)
-		// if unset PWD OLDPWD export HOME= et cd
-		//	RIEN (PWD et OLDPWD n'existe plus)
-	}
 	else
 		return (process_cd(home, t, env));
 }
@@ -77,10 +66,6 @@ int		process_cd_oldpwd(t_env **env, t_termcap *t)
 	{
 		printf("\n");
 		return (0);
-		// écrit une ligne vide
-		// remplit OLDPWD avec PWD
-		//	si PWD == '\0' => OLDPWD = '\0' et PWD = getcwd
-		//	si PWD == NULL => OLDPWD = '\0' et pas de PWD
 	}
 	else
 	{

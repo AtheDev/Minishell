@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 19:14:25 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/12 08:01:45 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/13 22:23:51 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,11 @@ void	init(t_list **cmd_tmp, t_list_cmd **cmd, t_termcap *t)
 void	init_read(t_termcap *t)
 {
 	get_pos_cursor(t);
+	get_size_window(t);
 	t->save_row_cursor = t->rows_cursor;
 	t->save_col_cursor = t->cols_cursor - t->size_prompt;
-	get_size_window(t);
+	if (t->save_col_cursor < 0)
+		t->save_col_cursor = t->cols_window + t->save_col_cursor;
 	t->rows_prompt = t->rows_cursor;
 	t->cols_prompt = 1;
 	t->pos_hist = 0;
