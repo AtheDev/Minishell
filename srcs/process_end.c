@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 23:16:56 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/09 22:42:05 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/12 22:00:25 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	clear_cmd_tmp(t_list *cmd)
 		free(cmd);
 		cmd = lst;
 	}
+	cmd = NULL;
 }
 
 void	clear_cmd(t_list_cmd *cmd)
@@ -62,7 +63,8 @@ void	clear_termcap(t_termcap *t)
 	t->save_home = ft_free(t->save_home);
 }
 
-int		process_end_ko(t_env *env, t_termcap *t, t_list *cmd_tmp, t_list_cmd *cmd)
+int		process_end_ko(t_env *env, t_termcap *t,
+		t_list *cmd_tmp, t_list_cmd *cmd)
 {
 	clear_env(env);
 	clear_termcap(t);

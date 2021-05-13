@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 19:14:25 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/10 14:14:04 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/12 08:01:45 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,18 @@ char	*find_home(char *str)
 	return (tmp);
 }
 
-int	save_pwd(t_env *env, t_termcap *t)
+int		save_pwd(t_env *env, t_termcap *t)
 {
 	if ((t->save_prompt = getcwd(NULL, 0)) == NULL)
 		return (error_msg(2, ' '));
 	if (env->size > 2)
 	{
-		t->save_home = ft_strdup(get_value_var_env(get_var_env(&env, "HOME")));
-		t->save_oldpwd = ft_strdup(get_value_var_env(get_var_env(&env, "OLDPWD")));
-		t->save_pwd = ft_strdup(get_value_var_env(get_var_env(&env, "PWD")));	
+		t->save_home =
+		ft_strdup(get_value_var_env(get_var_env(&env, "HOME")));
+		t->save_oldpwd =
+		ft_strdup(get_value_var_env(get_var_env(&env, "OLDPWD")));
+		t->save_pwd =
+		ft_strdup(get_value_var_env(get_var_env(&env, "PWD")));
 	}
 	else
 	{
@@ -53,15 +56,11 @@ int	save_pwd(t_env *env, t_termcap *t)
 	return (0);
 }
 
-int	init2(t_env *env, char **envp, t_termcap *t)
+int		init2(t_env *env, char **envp, t_termcap *t)
 {
-//printf("ICI\n");
 	g_sig.sig = 0;
-//printf("1\n");
 	signal(SIGINT, handler_sigint);
-//printf("2\n");
 	signal(SIGQUIT, handler_sigquit);
-//printf("3\n");
 	if (*envp != NULL)
 	{
 		*env = copy_env(envp, 1, 0);
@@ -74,24 +73,16 @@ int	init2(t_env *env, char **envp, t_termcap *t)
 		if (env->var_env == NULL)
 			return (1);
 	}
-	if (init_term(env) != 0)
+	if (init_term(env) != 0 || save_pwd(env, t) != 0)
 		return (1);
-	if (save_pwd(env, t) != 0)
-		return (1);
-//printf("prompt = %s | home = %s | pwd = %s | oldpwd = %s\n", t->save_prompt, t->save_home, t->save_pwd, t->save_oldpwd);
 	t->history = NULL;
-	//t->save_prompt = getcwd(NULL, 0);
 	t->tot_hist = 0;
 	t->del_char = tgetstr("dc", NULL);
 	t->del_line = tgetstr("dl", NULL);
 	t->del_many_char = tgetstr("ce", NULL);
 	t->move_left = tgetstr("le", NULL);
 	t->move_cursor = tgetstr("cm", NULL);
-//printf("Cas n°1\n");
-//	g_sig->t = t;
-//	g_sig->env = env;
-//printf("Cas n°2\n");
-	return (0);		
+	return (0);
 }
 
 void	init(t_list **cmd_tmp, t_list_cmd **cmd, t_termcap *t)
@@ -107,7 +98,6 @@ void	init_read(t_termcap *t)
 	get_pos_cursor(t);
 	t->save_row_cursor = t->rows_cursor;
 	t->save_col_cursor = t->cols_cursor - t->size_prompt;
-//ft_putnbr_fd(t->save_col_cursor, 2);
 	get_size_window(t);
 	t->rows_prompt = t->rows_cursor;
 	t->cols_prompt = 1;

@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 17:41:32 by adupuy            #+#    #+#             */
-/*   Updated: 2021/04/26 14:48:10 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/12 22:32:49 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,6 @@ void	print_hist(t_list **hist)
 	{
 		ft_putstr_fd("\033[32mHIST->CONTENT = \033[37m", 2);
 		ft_putendl_fd((*hist)->content, 2);
-	/*	if ((*hist)->before != NULL)
-		{
-			ft_putstr_fd("\033[32mHIST->BEFORE = \033[37m", 2);
-			ft_putendl_fd((*hist)->before->hist, 2);
-		}*/
 		if ((*hist)->next != NULL)
 		{
 			ft_putstr_fd("\033[32mHIST->NEXT = \033[37m", 2);
@@ -37,11 +32,6 @@ void	print_hist(t_list **hist)
 	}
 	ft_putstr_fd("\033[32mHIST->CONTENT = \033[37m", 2);
 	ft_putendl_fd((*hist)->content, 2);
-/*	if ((*hist)->before != NULL)
-	{
-		ft_putstr_fd("\033[32mHIST->BEFORE = \033[37m", 2);
-		ft_putendl_fd((*hist)->before->hist, 2);
-	}*/
 	if ((*hist)->next != NULL)
 	{
 		ft_putstr_fd("\033[32mHIST->NEXT = \033[37m", 2);

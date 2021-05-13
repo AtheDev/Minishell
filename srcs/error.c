@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 22:15:53 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/03 19:40:51 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/11 18:31:43 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	error_msg_with_string(int num, char *str)
 	if (num == 3)
 		putstr("minishell: ", str, ": too many arguments\n");
 	if (num == 4)
-		putstr("minishell: exit: ", str, " : numeric argument rquired\n");
+		putstr("minishell: exit: ", str, " : numeric argument required\n");
 	if (num == 5)
 		putstr("minishell: unset: « ", str, " » : not a valid identifier\n");
 	if (num == 6)

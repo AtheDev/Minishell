@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 19:09:43 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/03 16:40:28 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/12 09:29:10 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	init_term(t_env *env)
 {
-	char		*term_type;
-	int	ret;
+	char	*term_type;
+	int		ret;
 
 	term_type = get_value_var_env(get_var_env(&env, "TERM="));
 	if (term_type == NULL)
@@ -39,7 +39,7 @@ int	swap_way_icanon_echo(int num)
 		return (-1);
 	}
 	if (num == 0)
-		t_term.c_lflag &= ~ (ICANON | ECHO);
+		t_term.c_lflag &= ~(ICANON | ECHO);
 	else if (num == 1)
 		t_term.c_lflag |= (ICANON | ECHO);
 	if (tcsetattr(0, 0, &t_term) == -1)

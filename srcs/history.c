@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/28 18:25:03 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/10 14:13:24 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/12 09:34:08 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ int		save_history(char *input, t_list **history, t_termcap *t)
 	return (0);
 }
 
-void	print_history(t_list **hist, int index, t_termcap *t, t_env *env)
-{(void)env;
+void	print_history(t_list **hist, int index, t_termcap *t)
+{
 	t_list	*hist_tmp;
 	int		i;
 
@@ -72,22 +72,23 @@ void	delete_line_history(t_termcap *t)
 		size = (int)ft_strlen(t->input);
 	if (size + t->size_prompt + t->save_col_cursor >= t->cols_window)
 	{
-		count = ((int)ft_strlen(t->input) + t->size_prompt + t->save_col_cursor) / t->cols_window;
+		count = ((int)ft_strlen(t->input) + t->size_prompt +
+		t->save_col_cursor) / t->cols_window;
 		while (count > 0)
 		{
 			tputs(t->del_line, 0, &ft_putchar);
-			tputs(tgoto(t->move_cursor, 1, t->rows_cursor - 2), 0, &ft_putchar);
+			tputs(tgoto(t->move_cursor, 1, t->rows_cursor - 2),
+			0, &ft_putchar);
 			t->rows_cursor--;
 			count--;
-		}	
+		}
 	}
-		tputs(tgoto(t->move_cursor, t->save_col_cursor - 1, t->rows_cursor - 1), 0, &ft_putchar);
-		tputs(t->del_many_char, 0, &ft_putchar);
-	//	t->rows_cursor--;
-//	}
+	tputs(tgoto(t->move_cursor, t->save_col_cursor - 1, t->rows_cursor - 1),
+	0, &ft_putchar);
+	tputs(t->del_many_char, 0, &ft_putchar);
 }
 
-int		up_history(t_termcap *t, t_env *env)
+int		up_history(t_termcap *t)
 {
 	if (t->pos_hist == 0)
 	{
@@ -101,19 +102,17 @@ int		up_history(t_termcap *t, t_env *env)
 	if (t->pos_hist == 0 && t->input_tmp == NULL)
 		return (error_msg(2, ' '));
 	delete_line_history(t);
-	//tputs(t->del_line, 0, &ft_putchar);
 	if (t->pos_hist != t->tot_hist)
 		t->pos_hist++;
-	print_history(&t->history, t->pos_hist, t, env);
+	print_history(&t->history, t->pos_hist, t);
 	return (2);
 }
 
-int		down_history(t_termcap *t, t_env *env)
+int		down_history(t_termcap *t)
 {
 	delete_line_history(t);
-	//tputs(t->del_line, 0, &ft_putchar);
 	if (t->pos_hist > 0)
 		t->pos_hist--;
-	print_history(&t->history, t->pos_hist, t, env);
+	print_history(&t->history, t->pos_hist, t);
 	return (2);
 }

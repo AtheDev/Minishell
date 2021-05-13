@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/22 22:00:04 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/10 14:11:12 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/12 14:27:17 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int		key_delete(t_termcap *t, int size)
 	return (2);
 }
 
-int		check_char(char *buff, t_termcap *t, t_env *env)
+int		check_char(char *buff, t_termcap *t)
 {
 	if (buff[0] == '\n')
 	{
@@ -52,13 +52,13 @@ int		check_char(char *buff, t_termcap *t, t_env *env)
 	else if (buff[0] == '\x1b' && buff[1] == '[' && buff[2] == 'A')
 	{
 		if (t->history != NULL && t->pos_hist < t->tot_hist)
-			return (up_history(t, env));
+			return (up_history(t));
 		return (2);
 	}
 	else if (buff[0] == '\x1b' && buff[1] == '[' && buff[2] == 'B')
 	{
 		if (t->history != NULL && t->pos_hist > 0)
-			down_history(t, env);
+			down_history(t);
 		return (2);
 	}
 	else if (buff[0] == 127)
@@ -94,7 +94,7 @@ int		process_read(t_termcap *t, int ret, int new_line, t_env *env)
 		buff[ret] = '\0';
 		if (g_sig.sig == 1)
 			reset_after_g_sig(t, env);
-		if ((new_line = check_char(buff, t, env)) <= 0)
+		if ((new_line = check_char(buff, t)) <= 0)
 			break ;
 		if (new_line == 1)
 			if ((t->input = ft_my_strjoin(t->input, buff)) == NULL)

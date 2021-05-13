@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/17 10:08:32 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/08 11:22:52 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/12 09:26:24 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ int		count_word(char *str, int i, int count, int num)
 		else
 			i = moving_forward(str, i);
 		i++;
-		if ((str[i] == '\0' && ft_isspace(str[i - 1]) == 1 && is_escaped(str, i - 2) == 1)
-		|| (str[i] == '\0' && ft_isspace(str[i - 1]) == 0))
+		if ((str[i] == '\0' && ft_isspace(str[i - 1]) == 1 && is_escaped(
+		str, i - 2) == 1) || (str[i] == '\0' && ft_isspace(str[i - 1]) == 0))
 		{
 			if (count_word_next(i, &j, k, num) != -1)
 				return (j);

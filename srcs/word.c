@@ -6,7 +6,7 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/16 11:17:19 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/11 15:17:44 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/12 09:28:02 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ int	delete_all_space2(char **cmd, int *i)
 	}
 	else
 	{
-		while ((*cmd)[*i] == ' ' && ((*cmd)[*i + 1] == '\0' || ft_isspace((*cmd)[*i + 1]) == 1))
+		while ((*cmd)[*i] == ' ' && ((*cmd)[*i + 1] == '\0' ||
+		ft_isspace((*cmd)[*i + 1]) == 1))
 		{
 			*cmd = delete_char(*cmd, i);
 			if (*cmd == NULL)

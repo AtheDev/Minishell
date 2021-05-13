@@ -6,87 +6,25 @@
 /*   By: adupuy <adupuy@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/19 17:59:17 by adupuy            #+#    #+#             */
-/*   Updated: 2021/05/10 19:32:55 by adupuy           ###   ########.fr       */
+/*   Updated: 2021/05/13 14:26:51 by adupuy           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**delete_redir_and_file(char **cmd, int nb, int nb2/*, int nb_arg*/)
-{
-	char	**new;
-	int		i;
-	int		j;
-
-//	new = malloc(sizeof(char *) * (nb_arg - (2 * nb2) + (nb - nb2) + 1));
-	new = malloc(sizeof(char *) * (check_nb_arg(cmd, 0) - (2 * nb2) + (nb - nb2) + 1));
-	if (new == NULL)
-		return (NULL);
-	i = 0;
-	j = -1;
-	while (cmd[i] != NULL/*i < nb_arg*/)
-	{
-		if (/*cmd[i] != NULL && */ft_strncmp(cmd[i], "<", 2) == 0 && 
-		(ft_strncmp(cmd[i + 1], ">", 2) == 0 ||
-		ft_strncmp(cmd[i + 1], ">>", 3) == 0))
-			i = i + 1;
-		else if (/*cmd[i] != NULL && */(ft_strncmp(cmd[i], ">", 2) == 0
-		|| ft_strncmp(cmd[i], "<", 2) == 0 || ft_strncmp(cmd[i], ">>", 3) == 0))
-			i = i + 2;
-		else if (cmd[i] != NULL)
-		{
-			new[++j] = ft_strdup(cmd[i]);
-			if (new[j] == NULL)
-				return (new = ft_free_tab(new, i));
-			i++;
-		}
-		//else if (cmd[i] == NULL)
-		//	i++;
-	}
-	new[++j] = NULL;
-	ft_free_tab(cmd, check_nb_arg(cmd, 0)/*nb_arg*/);
-	return (new);
-}
-
-int		close_redir(t_list_cmd **cmd)
-{
-	int	i;
-
-	i = 0;
-	while (i < (*cmd)->nb_redir)
-	{
-		if (close((*cmd)->fd_redir[i]) == -1)
-			return (1);
-		i++;
-	}
-	free((*cmd)->fd_redir);
-	return (0);
-}
-
-int		open_file(t_list_cmd **cmd, int i, int *index, char *tmp)
+int	open_file_next(int *num, t_list_cmd **cmd, int i)
 {
 	int	fd;
-	int	num;
 
 	fd = 0;
-	num = 0;
-	errno = 0;
-	if ((*cmd)->arg_cmd[i] == NULL || (*cmd)->arg_cmd[i][0] == '\0')
-		{ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(tmp, 2);
-			ft_putstr_fd(": redirection ambiguë\n", 2);
-			tmp = ft_free(tmp);
-			(*cmd)->nb_redir--;
-		//	fd = -1;
-			return (1);
-		}
 	if (ft_strncmp((*cmd)->arg_cmd[i - 1], "<", 2) == 0)
 	{
 		if (ft_strncmp((*cmd)->arg_cmd[i], ">", 2) == 0 ||
 		ft_strncmp((*cmd)->arg_cmd[i], ">>", 3) == 0)
 		{
-			num = 1;
+			*num = 1;
 			(*cmd)->nb_redir--;
+			return (0);
 		}
 		else
 			fd = open((*cmd)->arg_cmd[i], O_RDONLY);
@@ -97,77 +35,89 @@ int		open_file(t_list_cmd **cmd, int i, int *index, char *tmp)
 	else if (ft_strncmp((*cmd)->arg_cmd[i - 1], ">>", 3) == 0)
 		fd = open((*cmd)->arg_cmd[i], O_WRONLY | O_CREAT |
 		O_APPEND, S_IRUSR | S_IRGRP | S_IROTH | S_IWUSR | S_IWGRP);
+	return (fd);
+}
+
+int	open_file(t_list_cmd **cmd, int i, int *index, char **tmp)
+{
+	int	fd;
+	int	num;
+
+	fd = 0;
+	num = 0;
+	errno = 0;
+	if ((*cmd)->arg_cmd[i] == NULL || (*cmd)->arg_cmd[i][0] == '\0')
+		return (error_redirect(*tmp, cmd, "redirection ambiguë", 0));
+	fd = open_file_next(&num, cmd, i);
 	if (fd == -1)
-	{	ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd((*cmd)->arg_cmd[i], 2);
-		ft_putstr_fd(": ", 2);
-		ft_putstr_fd(strerror(errno), 2);
-		write(2, "\n", 1);
-		(*cmd)->nb_redir--;
-		tmp = ft_free(tmp);
-		return (1);
-	}
-	if (num == 0)
 	{
-		if (ft_strncmp((*cmd)->arg_cmd[i - 1], "<", 2) == 0)
-			(*cmd)->fd[0] = fd;
-		else
-			(*cmd)->fd[1] = fd;
-		(*cmd)->fd_redir[(*index)++] = fd;
+		if (*tmp != NULL)
+			*tmp = ft_free(*tmp);
+		return (error_redirect((*cmd)->arg_cmd[i], cmd, strerror(errno), 1));
 	}
-	tmp = ft_free(tmp);
+	if (num == 1)
+		return (0);
+	if (ft_strncmp((*cmd)->arg_cmd[i - 1], "<", 2) == 0)
+		(*cmd)->fd[0] = fd;
+	else
+		(*cmd)->fd[1] = fd;
+	(*cmd)->fd_redir[(*index)++] = fd;
+	if (*tmp != NULL)
+		*tmp = ft_free(*tmp);
 	return (0);
 }
 
-int		process_redir_cmd(t_list_cmd **cmd, int nb_redir)
+int	loop_redir(t_list_cmd **cmd, int *i, int *quote, char **tmp)
 {
-	int	i;
-	int	nb;
-	int	index;
-	int	ret;
-	int	quote;
-	char 	*tmp;
+	while ((ft_strncmp((*cmd)->arg_cmd[*i], ">", 2) != 0 &&
+	ft_strncmp((*cmd)->arg_cmd[*i], "<", 2) != 0 &&
+	ft_strncmp((*cmd)->arg_cmd[*i], ">>", 3) != 0) &&
+	(*cmd)->arg_cmd[*i] != NULL)
+	{
+		(*i)++;
+		if (((*cmd)->arg_cmd[*i] = edit_arg((*cmd)->arg_cmd[*i],
+		&g_sig.env, -1, quote)) == NULL)
+			return (error_msg(2, ' '));
+	}
+	if ((*cmd)->arg_cmd[*i] != NULL)
+	{
+		(*i)++;
+		*tmp = ft_strdup((*cmd)->arg_cmd[*i]);
+		if (*tmp == NULL || ((*cmd)->arg_cmd[*i] =
+		edit_arg((*cmd)->arg_cmd[*i], &g_sig.env, -1, quote)) == NULL)
+		{
+			if (*tmp != NULL)
+				*tmp = ft_free(*tmp);
+			return (error_msg(2, ' '));
+		}
+	}
+	return (0);
+}
 
-	i = 0;
-	index = 0;
-	ret = 0;
-	quote = 1;
+int	process_redir_cmd(t_list_cmd **cmd, int nb_redir, int i, int index)
+{
+	int		nb;
+	int		ret;
+	int		quote;
+	char	*tmp;
+
 	tmp = NULL;
-	nb = nb_redir;
-	(*cmd)->fd_redir = malloc(sizeof(int) * (*cmd)->nb_redir);
-	if ((*cmd)->fd_redir == NULL)
-		return (error_msg(2, ' '));
+	if (init_redir(&ret, &quote, cmd, &nb) == -1)
+		return (-1);
 	while (nb_redir > 0)
 	{
-		if (((*cmd)->arg_cmd[i] = edit_arg((*cmd)->arg_cmd[i], &g_sig.env, 0, &quote))
-		== NULL)
-			return(error_msg(2, ' '));
-		while ((ft_strncmp((*cmd)->arg_cmd[i], ">", 2) != 0 &&
-		ft_strncmp((*cmd)->arg_cmd[i], "<", 2) != 0 &&
-		ft_strncmp((*cmd)->arg_cmd[i], ">>", 3) != 0) &&
-		(*cmd)->arg_cmd[i] != NULL)
+		if (((*cmd)->arg_cmd[i] = edit_arg((*cmd)->arg_cmd[i],
+		&g_sig.env, -1, &quote)) == NULL)
+			return (error_msg(2, ' '));
+		if (loop_redir(cmd, &i, &quote, &tmp) != 0)
+			return (-1);
+		if ((ret = open_file(cmd, i, &index, &tmp)) == 1)
 		{
-			i++;
-			if (((*cmd)->arg_cmd[i] = edit_arg((*cmd)->arg_cmd[i], &g_sig.env, 0, &quote))
-			== NULL)
-				return(error_msg(2, ' '));
-
-		}
-		if ((*cmd)->arg_cmd[i] != NULL)
-		{
-			i++;
-			tmp = ft_strdup((*cmd)->arg_cmd[i]);
-			if (((*cmd)->arg_cmd[i] = edit_arg((*cmd)->arg_cmd[i], &g_sig.env, 0, &quote))
-			== NULL)
-				return(error_msg(2, ' '));
-		}
-		if ((ret = open_file(cmd, i, &index, tmp)) == 1)
+			(*cmd)->nb_redir = (*cmd)->nb_redir - nb_redir;
 			return (1);
+		}
 		i++;
 		nb_redir--;
 	}
-	if (((*cmd)->arg_cmd = delete_redir_and_file((*cmd)->arg_cmd, nb, (*cmd)->nb_redir/*, (*cmd)->nb_arg*/)) == NULL)
-		return (error_msg(2, ' '));
-//	(*cmd)->nb_arg = check_nb_arg((*cmd)->arg_cmd, 0);
-	return (0);
+	return (clean_redir(cmd, nb));
 }
